@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace exam_hall_seating.Models
+namespace exam_hall_seating.ViewModels
 {
-    public class Student
+    public class CreateStudentViewModel
     {
-        [Key]
         public int Id { get; set; }
         public int Number { get; set; }
         public string FirstName { get; set; }
@@ -14,14 +13,7 @@ namespace exam_hall_seating.Models
         public string Phone { get; set; }
         public int Year { get; set; }
         public int Period { get; set; }
-
-        [ForeignKey("Department")]
         public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
-
-
-
-        public ICollection<Enrollment>? Enrollments { get; set; }
-        public ICollection<ExamSeat>? ExamSeats { get; set; }
+        public List<SelectListItem>? DepartmentList { get; set; }
     }
 }
