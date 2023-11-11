@@ -13,6 +13,6 @@ namespace exam_hall_seating.ViewModels
         public int Year { get; set; }
         public int Period { get; set; }
         public int DepartmentId { get; set; }
-        public List<SelectListItem>? DepartmentList { get; set; }
+        
     }
 }

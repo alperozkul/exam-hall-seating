@@ -1,4 +1,5 @@
-﻿using exam_hall_seating.Data;
+﻿using AutoMapper;
+using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.ViewModels;
@@ -12,11 +13,13 @@ namespace exam_hall_seating.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IStudentRepository _studentRepository;
+        private readonly IMapper _mapper;
 
-        public StudentController(ApplicationDbContext context, IStudentRepository studentRepository)
+        public StudentController(ApplicationDbContext context, IStudentRepository studentRepository, IMapper mapper)
         {
             _context = context;
             _studentRepository = studentRepository;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -26,77 +29,42 @@ namespace exam_hall_seating.Controllers
 
         public IActionResult Create()
         {
-            var viewModel = new CreateStudentViewModel();
-            viewModel.DepartmentList = _context.Departments
-                .Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name })
-                .ToList();
-            return View(viewModel);
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateStudentViewModel studentVM)
+        public async Task<IActionResult> Create(CreateStudentViewModel createStudentVM)
         {
             if (ModelState.IsValid)
             {
-                var student = new Student
-                {
-                    Number = studentVM.Number,
-                    FirstName = studentVM.FirstName,
-                    LastName = studentVM.LastName,
-                    Mail = studentVM.Mail,
-                    Phone = studentVM.Phone,
-                    Year = studentVM.Year,
-                    Period = studentVM.Period,
-                    DepartmentId = studentVM.DepartmentId,                                      
-                };
+                Student student = _mapper.Map<Student>(createStudentVM);  
                 _studentRepository.Add(student);
                 return RedirectToAction("Index");
-            }
-            
-            return View(studentVM);
+            }     
+            return View(createStudentVM);
         }
         public async Task<IActionResult> Edit(int id)
         {
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+
             var student = await _studentRepository.GetByIdAsync(id);
             if (student == null) return View("Error");
-            var studentVM = new EditStudentViewModel
-            {
-                Number = student.Number,
-                FirstName = student.FirstName,
-                LastName = student.LastName,
-                Mail = student.Mail,
-                Phone = student.Phone,
-                Year = student.Year,
-                Period = student.Period,
-                DepartmentId = student.DepartmentId,
-                DepartmentList = _context.Departments
-                .Select(d => new SelectListItem { Value = d.Id.ToString(), Text = d.Name })
-                .ToList()
-            };
-            return View(studentVM);
+
+            EditStudentViewModel editStudentVM = _mapper.Map<EditStudentViewModel>(student); 
+            return View(editStudentVM);
 
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, EditStudentViewModel studentVM)
+        public async Task<IActionResult> Edit(int id, EditStudentViewModel editStudentVM)
         {
             if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Edit işlemi gerçekleştirilemiyor.");
-                return View("Edit", studentVM);
+                ModelState.AddModelError("", "Güncelleme işlemi gerçekleştirilemiyor.");
+                return View("Edit", editStudentVM);
             }
-            var student = new Student
-            {
-                Id = id,
-                Number = studentVM.Number,
-                FirstName = studentVM.FirstName,
-                LastName = studentVM.LastName,
-                Mail = studentVM.Mail,
-                Phone = studentVM.Phone,
-                Year = studentVM.Year,
-                Period = studentVM.Period,
-                DepartmentId = studentVM.DepartmentId,
-            };
+            Student student = _mapper.Map<Student>(editStudentVM);
             _studentRepository.Update(student);
             return RedirectToAction("Index");
         }
