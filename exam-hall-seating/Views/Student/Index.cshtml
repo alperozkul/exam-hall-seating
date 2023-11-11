@@ -2,10 +2,12 @@
 @{
     ViewData["Title"] = "Öğrenci İşlemleri";
 }
+<a type="button" asp-controller="Student" asp-action="Create" class="btn btn-primary">Öğrenci Ekle</a>
 <table class="table">
     <thead>
         <tr>
             <th scope="col">#</th>
+            <th scope="col">Number</th>
             <th scope="col">First</th>
             <th scope="col">Last</th>
             <th scope="col">Mail</th>
@@ -25,6 +27,7 @@
         {         
             <tr>
                 <th scope="row">@i</th>
+                <td>@item.Number</td>
                 <td>@item.FirstName</td>
                 <td>@item.LastName</td>
                 <td>@item.Mail</td>
@@ -33,29 +36,26 @@
                 <td>@item.Period</td>
                 <td>@item.Department.Name</td>
                 <td>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                        Launch static backdrop modal
-                    </button>
-                    <button type="button" class="btn btn-primary">Güncelle</button>
-                    <button type="button" class="btn btn-danger">Sil</button>
+                    <a type="button" asp-controller="Student" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Düzenle</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>
                 </td>
             </tr>
             i++;
         }
 
         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel">Dikkat</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        ...
+                        Öğrenciyi silmek istediğinize emin misiniz?
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                        <button type="button" class="btn btn-danger">Sil</button>
                     </div>
                 </div>
             </div>
