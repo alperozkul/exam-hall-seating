@@ -9,7 +9,7 @@ namespace exam_hall_seating.Models
         public string Name { get; set; }
 
         public ICollection<Student> Students { get; set; }
-        public ICollection<Instructor> Instructors { get; set; }
+        public ICollection<AppUser> AppUsers{ get; set; }
         public ICollection<Lecture> Lectures { get; set; }
 
     }
