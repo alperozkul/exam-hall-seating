@@ -1,6 +1,6 @@
 ﻿using exam_hall_seating.Data;
 using exam_hall_seating.Models;
-using exam_hall_seating.ViewModels;
+using exam_hall_seating.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

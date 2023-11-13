@@ -2,7 +2,7 @@
 using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
-using exam_hall_seating.ViewModels;
+using exam_hall_seating.ViewModels.StudentVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
