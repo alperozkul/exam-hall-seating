@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace exam_hall_seating.ViewModels
+namespace exam_hall_seating.ViewModels.StudentVM
 {
-    public class CreateStudentViewModel
+    public class EditStudentViewModel
     {
         public int Id { get; set; }
         public int Number { get; set; }
@@ -14,5 +13,6 @@ namespace exam_hall_seating.ViewModels
         public int Year { get; set; }
         public int Period { get; set; }
         public int DepartmentId { get; set; }
+
     }
 }

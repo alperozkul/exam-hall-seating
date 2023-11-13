@@ -1,6 +1,6 @@
 ﻿using exam_hall_seating.Data;
 using exam_hall_seating.Models;
-using exam_hall_seating.ViewModels;
+using exam_hall_seating.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +51,14 @@ namespace exam_hall_seating.Controllers
             return View(loginViewModel);
             
 
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
     }
 }
