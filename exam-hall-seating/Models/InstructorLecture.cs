@@ -8,12 +8,12 @@ namespace exam_hall_seating.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("Instructor")]
-        public int InstructorId { get; set; }
-        public Instructor Instructor { get; set; }
+        [ForeignKey("AppUser")]
+        public string AppUserId { get; set; }
+        public AppUser? AppUser { get; set; }
 
         [ForeignKey("Lecture")]
         public int LectureId { get; set; }
-        public Lecture Lecture { get; set;}
+        public Lecture? Lecture { get; set;}
     }
 }
