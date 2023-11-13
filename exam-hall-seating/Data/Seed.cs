@@ -48,27 +48,6 @@ namespace exam_hall_seating.Data
                         Console.WriteLine();
                     }
                 }
-                
-
-
-                //string adminUserEmail = "alperozkul1@gmail.com";
-
-                //var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
-                //if (adminUser == null)
-                //{
-                //    var newAdminUser = new AppUser()
-                //    {
-                //        //UserName = "teddysmithdev",
-                //        Email = adminUserEmail,
-                //        EmailConfirmed = true,
-                //        PhoneNumber = "5386326226",
-                //        PhoneNumberConfirmed = true,
-                //        FirstName = "Alper",
-                //        LastName = "Özkul"       
-                //    };
-                //    await userManager.CreateAsync(newAdminUser, "alper12345");
-                //    await userManager.AddToRoleAsync(newAdminUser, AppRole.Admin);
-                //}
 
                 var newAppUser = new AppUser()
                 {
@@ -99,26 +78,6 @@ namespace exam_hall_seating.Data
                 }
                 
 
-
-                //string appUserEmail = "ogretmen@gmail.com";
-
-                //var appUser = await userManager.FindByEmailAsync(appUserEmail);
-                //if (appUser == null)
-                //{
-                //    var newAppUser = new AppUser()
-                //    {
-                //        //UserName = "app-user",
-                //        Email = appUserEmail,
-                //        EmailConfirmed = true,
-                //        PhoneNumber = "5005005050",
-                //        PhoneNumberConfirmed = true,
-                //        FirstName = "Durmuş Özkan",
-                //        LastName = "Şahin",
-                //        DepartmentId = 1
-                //    };
-                //    await userManager.CreateAsync(newAppUser, "durmuş12345");
-                //    await userManager.AddToRoleAsync(newAppUser, AppRole.Instructor);
-                //}
             }
         }
     }
