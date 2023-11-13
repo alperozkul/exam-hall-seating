@@ -24,11 +24,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<AppUser, AppRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddIdentityCore<AppUser>()
-    .AddRoles<AppRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 
@@ -38,6 +33,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
 var app = builder.Build();
+
+
+//if (args.Length == 1 && args[0].ToLower() == "seeddata")
+//{
+//    await Seed.SeedUsersAndRolesAsync(app);
+//    //Seed.SeedData(app);
+//}
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
