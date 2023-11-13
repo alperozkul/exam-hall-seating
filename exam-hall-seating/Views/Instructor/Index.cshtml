@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<AppUser>
 @{
     ViewData["Title"] = "Öğretmen İşlemleri";
 }
@@ -7,3 +7,58 @@
 <h1>Öğretmen İşlemleri</h1>
 
 <a type="button" asp-controller="Instructor" asp-action="Create" class="btn btn-primary">Öğretmen Ekle</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ad</th>
+            <th scope="col">Soyad</th>
+            <th scope="col">Mail</th>
+            <th scope="col">Telefon</th>
+            <th scope="col">Bölüm</th>
+            <th scope="col">İşlemler</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.Email</td>
+                <td>@item.PhoneNumber</td>
+                <td>@item.Department.Name</td>
+                <td>
+                    <a type="button" asp-controller="Instructor" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Düzenle</a>
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>
+                </td>
+            </tr>
+            i++;
+        }
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Dikkat</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Öğrenciyi silmek istediğinize emin misiniz?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                        <button type="button" class="btn btn-danger">Sil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </tbody>
+</table>

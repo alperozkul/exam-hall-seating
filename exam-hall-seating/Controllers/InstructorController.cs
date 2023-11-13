@@ -25,7 +25,11 @@ namespace exam_hall_seating.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var instructors = _userManager.Users
+                .Where(user => user.DepartmentId != null)
+                .Include(i => i.Department)
+                .ToList();
+            return View(instructors);
         }
 
 
@@ -38,19 +42,26 @@ namespace exam_hall_seating.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateInstructorViewModel createInstructorVM)
         {
-            if (ModelState.IsValid)
-            {
-                AppUser appUser = _mapper.Map<AppUser>(createInstructorVM);
-                var result = await _userManager.CreateAsync(appUser, createInstructorVM.Password);
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(appUser, AppRole.Instructor);
-                    return RedirectToAction("Index", "Instructor");
-                }
-            }
-            return View(createInstructorVM);
+            if (!ModelState.IsValid) return View(createInstructorVM);
             
+            var user = await _userManager.FindByEmailAsync(createInstructorVM.Email);
+            if (user != null) 
+            {
+                TempData["Error"] = "Bu email adresi kullanılmaktadır.";
+                return View(createInstructorVM);
+            }
 
+            AppUser appUser = _mapper.Map<AppUser>(createInstructorVM);
+            var result = await _userManager.CreateAsync(appUser, createInstructorVM.Password);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(appUser, AppRole.Instructor);
+                return RedirectToAction("Index", "Instructor");
+            }
+            return View(createInstructorVM);   
         }
+
+
+        
     }
 }
