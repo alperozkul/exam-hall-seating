@@ -19,40 +19,42 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto">      
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Home" asp-action="Index">Anasayfa</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Classroom" asp-action="Index">Sınıf İşlemleri</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Sınav İşlemleri
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Exam" asp-action="Index">Sınav CRUD</a></li>
-                            <li><a class="dropdown-item" asp-controller="ExamSeat" asp-action="Index">Sınav Oturma Düzeni</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Ders İşlemleri
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" asp-controller="Lecture" asp-action="Index">Ders ekleme-silme-görüntüleme işlemleri</a></li>
-                            <li><a class="dropdown-item" asp-controller="Enrollment" asp-action="Index">Öğrenciye Ders Atama İşlemleri</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Student" asp-action="Index">Öğrenci İşlemleri</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Instructor" asp-action="Index">Öğretmen İşlemleri</a>
-                    </li>
-                    
                     @if (User.Identity.IsAuthenticated)
-                    {
+                    {                       
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Classroom" asp-action="Index">Sınıf İşlemleri</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Sınav İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-controller="Exam" asp-action="Index">Sınav CRUD</a></li>
+                                <li><a class="dropdown-item" asp-controller="ExamSeat" asp-action="Index">Sınav Oturma Düzeni</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ders İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-controller="Lecture" asp-action="Index">Ders ekleme-silme-görüntüleme işlemleri</a></li>
+                                <li><a class="dropdown-item" asp-controller="Enrollment" asp-action="Index">Öğrenciye Ders Atama İşlemleri</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Student" asp-action="Index">Öğrenci İşlemleri</a>
+                        </li>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Instructor" asp-action="Index">Öğretmen İşlemleri</a>
+                            </li>
+                        }
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Profil İşlemleri
