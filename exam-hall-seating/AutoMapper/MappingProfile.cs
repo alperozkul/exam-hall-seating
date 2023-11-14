@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using exam_hall_seating.Models;
 using exam_hall_seating.ViewModels.InstructorVM;
+using exam_hall_seating.ViewModels.LectureVM;
 using exam_hall_seating.ViewModels.StudentVM;
 
 namespace exam_hall_seating.AutoMapper
@@ -13,6 +14,7 @@ namespace exam_hall_seating.AutoMapper
             CreateMap<Student, EditStudentViewModel>().ReverseMap();
             CreateMap<AppUser, CreateInstructorViewModel>().ReverseMap();
             CreateMap<AppUser, EditInstructorViewModel>().ReverseMap();
+            CreateMap<Lecture, CreateLectureViewModel>().ReverseMap();
 
             
         }

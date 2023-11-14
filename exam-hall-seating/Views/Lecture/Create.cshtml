@@ -1,0 +1,56 @@
+﻿@using exam_hall_seating.ViewModels.LectureVM;
+@using static exam_hall_seating.Models.Lecture;
+@model CreateLectureViewModel
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- jQuery UI -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+<form method="post" asp-action="Create">
+    <div class="form-group col-md-3">
+        <label asp-for="Code">Ders Kodu</label>
+        <input asp-for="Code" class="form-control" placeholder="Ders Kodu">
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+    <div class="form-group col-md-3">
+        <label asp-for="Name">Ders Adı</label>
+        <input asp-for="Name" class="form-control" placeholder="Ders Adı">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-md-3">
+        <label asp-for="Description">Açıklama</label>
+        <input asp-for="Description" class="form-control" placeholder="Açıklama">
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group col-md-3">
+        <label asp-for="Year">Yıl</label>
+        <input asp-for="Year" class="form-control" placeholder="Yıl">
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+    <div class="form-group col-md-3">
+        <label asp-for="Period">Dönem</label>
+        <select asp-for="Period" asp-items="@Html.GetEnumSelectList<Periods>()" class="form-control">
+            <option>--Seçiniz--</option>
+        </select>
+    </div>
+    <div class="form-group col-md-3">
+        <label asp-for="DepartmentId"></label>
+        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-control">
+            <option value="">--Seçiniz--</option>
+        </select>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+</form>
+
+
+
+
+
+
