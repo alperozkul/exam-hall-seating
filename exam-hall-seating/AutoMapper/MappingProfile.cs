@@ -15,8 +15,9 @@ namespace exam_hall_seating.AutoMapper
             CreateMap<AppUser, CreateInstructorViewModel>().ReverseMap();
             CreateMap<AppUser, EditInstructorViewModel>().ReverseMap();
             CreateMap<Lecture, CreateLectureViewModel>().ReverseMap();
+            CreateMap<Lecture, EditLectureViewModel>().ReverseMap();
 
-            
+
         }
     }
 }

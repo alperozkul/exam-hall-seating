@@ -47,5 +47,29 @@ namespace exam_hall_seating.Controllers
             return View(createLectureVM);
         }
 
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+
+            var lecture = await _lectureRepository.GetByIdAsync(id);
+            if (lecture == null) return View("Error");
+
+            EditLectureViewModel editLectureVM = _mapper.Map<EditLectureViewModel>(lecture);
+            return View(editLectureVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EditLectureViewModel editLectureVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Güncelleme işlemi gerçekleştirilemiyor.");
+                return View("Edit", editLectureVM);
+            }
+            Lecture lecture = _mapper.Map<Lecture>(editLectureVM);
+            _lectureRepository.Update(lecture);
+            return RedirectToAction("Index");
+        }
     }
 }

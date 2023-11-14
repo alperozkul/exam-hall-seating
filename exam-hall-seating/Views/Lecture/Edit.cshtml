@@ -1,9 +1,9 @@
 ﻿@using exam_hall_seating.ViewModels.LectureVM;
 @using static exam_hall_seating.Models.Lecture;
-@model CreateLectureViewModel
+@model EditLectureViewModel
 
-
-<form method="post" asp-action="Create">
+<form method="post" asp-action="Edit">
+    <input type="hidden" value="Id" id="Id"/>
     <div class="form-group col-md-3">
         <label asp-for="Code">Ders Kodu</label>
         <input asp-for="Code" class="form-control" placeholder="Ders Kodu">
@@ -40,9 +40,3 @@
     </div>
     <button type="submit" class="btn btn-primary">Kaydet</button>
 </form>
-
-
-
-
-
-

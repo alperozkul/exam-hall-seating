@@ -3,7 +3,7 @@
 namespace exam_hall_seating.ViewModels.InstructorVM
 {
     public class EditInstructorViewModel
-    {
+    {  
         [Display(Name = "Ad")]
         [Required(ErrorMessage = "Lütfen ad giriniz.")]
         public string FirstName { get; set; }
