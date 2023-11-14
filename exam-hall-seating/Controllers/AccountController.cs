@@ -53,7 +53,6 @@ namespace exam_hall_seating.Controllers
 
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Logout()
         {

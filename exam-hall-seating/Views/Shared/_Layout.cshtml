@@ -50,18 +50,32 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Instructor" asp-action="Index">Öğretmen İşlemleri</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Profil İşlemleri
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Şifre değiştirme</a></li>
-                            <li><a class="dropdown-item" href="#">Ayarlar</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class ="nav-link" asp-controller="Account" asp-action="Login">Giriş Yap</a>
-                    </li>
+                    
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Profil İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#">Şifre değiştirme</a></li>
+                                <li><a class="dropdown-item" href="#">Ayarlar</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-area="" asp-controller="Account" asp-action="Logout">
+                                <button class="btn">Çıkış Yap</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                        </li>
+                    }
+                    
+                    
                 </ul>
             </div>
         </div>

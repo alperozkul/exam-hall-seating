@@ -55,7 +55,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication(); //Eklendi.
 app.UseAuthorization();
 
 app.MapControllerRoute(
