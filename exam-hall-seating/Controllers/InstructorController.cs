@@ -100,5 +100,13 @@ namespace exam_hall_seating.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            AppUser appUser = await _userManager.FindByIdAsync(id);
+            await _userManager.DeleteAsync(appUser);
+
+            return RedirectToAction("Index");
+        }
     }
 }
