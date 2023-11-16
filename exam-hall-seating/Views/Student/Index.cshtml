@@ -37,13 +37,17 @@
                 <td>@item.Department.Name</td>
                 <td>
                     <a type="button" asp-controller="Student" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Düzenle</a>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>
+                    @*<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>*@
+                    <form method="post" action="/Student/Delete" onsubmit="return confirm('Öğrenciyi silmek istediğinize emin misiniz?');">
+                        <input type="hidden" name="id" value="@item.Id"  />
+                        <button type="submit" class="btn btn-danger">Sil</button>
+                    </form>
                 </td>
             </tr>
             i++;
         }
 
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        @*<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -59,7 +63,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
         
     </tbody>
 </table>

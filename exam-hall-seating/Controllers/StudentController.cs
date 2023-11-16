@@ -68,5 +68,15 @@ namespace exam_hall_seating.Controllers
             _studentRepository.Update(student);
             return RedirectToAction("Index");
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Student student = await _studentRepository.GetByIdAsync(id);
+            _studentRepository.Delete(student);
+
+            return RedirectToAction("Index");
+        }
     }
 }
