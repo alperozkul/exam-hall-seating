@@ -36,12 +36,15 @@
                 <td>@item.Period</td>
                 <td>@item.Department.Name</td>
                 <td>
-                    <a type="button" asp-controller="Student" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Düzenle</a>
-                    @*<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>*@
-                    <form method="post" action="/Student/Delete" onsubmit="return confirm('Öğrenciyi silmek istediğinize emin misiniz?');">
-                        <input type="hidden" name="id" value="@item.Id"  />
-                        <button type="submit" class="btn btn-danger">Sil</button>
-                    </form>
+                    <div class="btn-group">
+                        <a type="button" asp-controller="Student" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary me-1">Düzenle</a>
+                        @*<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>*@
+                        <form method="post" action="/Student/Delete" onsubmit="return confirm('Öğrenciyi silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger">Sil</button>
+                        </form>
+                    </div>
+                    
                 </td>
             </tr>
             i++;

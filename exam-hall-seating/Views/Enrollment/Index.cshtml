@@ -1,4 +1,47 @@
-﻿@{
-    ViewData["Title"] = "Ders Kayıt İşlemleri";
-}
+﻿@model exam_hall_seating.ViewModels.EnrollmentVM.AssignmentViewModel
+
 <h1>Öğrenci Ders Kayıt İşlemleri</h1>
+
+<form method="post" asp-controller="Enrollment" asp-action="GetAllStudent">
+    <div class="form-group col-md-3">
+        <label asp-for="LectureId">Ders Seçiniz</label>
+        <select asp-for="LectureId" asp-items="ViewBag.Lectures" class="form-control">
+            <option value="">-- Seçiniz --</option>
+        </select>
+        <span asp-validation-for="LectureId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Öğrencileri Getir</button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Numara</th>
+            <th scope="col">Ad</th>
+            <th scope="col">Soyad</th>
+            <th scope="col">Yıl</th>
+            <th scope="col">Dönem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @if (Model.Students != null)
+        {
+            foreach (var item in Model.Students)
+            {
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@item.Number</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Year</td>
+                    <td>@item.Period</td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
