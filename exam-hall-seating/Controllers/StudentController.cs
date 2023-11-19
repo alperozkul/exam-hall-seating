@@ -35,7 +35,7 @@ namespace exam_hall_seating.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateStudentViewModel createStudentVM)
-        {
+        {     
             if (ModelState.IsValid)
             {
                 Student student = _mapper.Map<Student>(createStudentVM);  

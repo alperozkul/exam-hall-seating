@@ -1,4 +1,52 @@
-﻿@{
+﻿@model IEnumerable<Exam>
+
+@{
     ViewData["Title"] = "Sınav İşlemleri";
 }
 <h1>Sınav CRUD işlemleri</h1>
+<a type="button" asp-controller="Exam" asp-action="Create" class="btn btn-primary">Sınav Ekle</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ders Kodu</th>
+            <th scope="col">Ad</th>
+            <th scope="col">Yıl</th>
+            <th scope="col">Dönem</th>
+            <th scope="col">Tarih</th>
+            <th scope="col">Başlangıç Saat</th>
+            <th scope="col">Bitiş Saat</th>
+            <th scope="col">İşlemler</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@item.Lecture.Code</td>
+                <td>@item.Lecture.Name</td>
+                <td>@item.Lecture.Year</td>
+                <td>@item.Lecture.Period</td>
+                <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                <td><div>@($"{(int)item.StartTime.TotalHours:D2}:{item.StartTime.Minutes:D2}")</div></td>
+                <td><div>@($"{(int)item.EndTime.TotalHours:D2}:{item.EndTime.Minutes:D2}")</div></td>
+                <td>
+                    <div class="btn-group">
+                        <a type="button" asp-controller="Exam" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary me-1">Düzenle</a>
+                        <form method="post" action="/Exam/Delete" onsubmit="return confirm('Sınavı silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger">Sil</button>
+                        </form>
+                    </div>
+
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
