@@ -15,9 +15,21 @@ namespace exam_hall_seating.Models
         [ForeignKey("Lecture")]
         public int LectureId { get; set; }
         public Lecture? Lecture { get; set; }
-        public int Year { get; set; }  
-        public int Period { get; set; }
-        
+        public int Year { get; set; }
+        public Periods Period { get; set; }
+        public Grades? Grade { get; set; }
+
+        public enum Periods
+        {
+            Güz = 1,
+            Bahar = 2
+        }
+
+        public enum Grades
+        {
+            A, B, C, D, F
+        }
+
 
 
     }

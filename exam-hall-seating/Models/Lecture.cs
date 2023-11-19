@@ -24,8 +24,8 @@ namespace exam_hall_seating.Models
 
         public enum Periods
         {
-            Fall = 1,
-            Spring = 2
+            Güz = 1,
+            Bahar = 2
         }
 
     }
