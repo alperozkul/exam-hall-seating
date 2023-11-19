@@ -40,5 +40,21 @@ namespace exam_hall_seating.Controllers
             }
             return View("Index", assignmentVM);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EnrollStudents(AssignmentViewModel assignmentVM)
+        {
+            if (ModelState.IsValid)
+            {
+                await _enrollmentRepository.EnrollStudentsAsync(assignmentVM.LectureId, assignmentVM.Students);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // Validation errors occurred, handle accordingly
+            }
+
+            return View("Index", assignmentVM);
+        }
     }
 }

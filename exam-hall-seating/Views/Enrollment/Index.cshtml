@@ -42,6 +42,18 @@
                 </tr>
                 i++;
             }
+            <form method="post" asp-controller="Enrollment" asp-action="EnrollStudents">
+                <input type="hidden" asp-for="LectureId" />
+                @for (var k = 0; k < Model.Students.Count; k++)
+                {
+                    <input type="hidden" name="Students[@k].Number" value="@Model.Students[k].Number" />
+                    <input type="hidden" name="Students[@k].FirstName" value="@Model.Students[k].FirstName" />
+                    <input type="hidden" name="Students[@k].LastName" value="@Model.Students[k].LastName" />
+                    <input type="hidden" name="Students[@k].Year" value="@Model.Students[k].Year" />
+                    <input type="hidden" name="Students[@k].Period" value="@Model.Students[k].Period" />
+                }
+                <button type="submit" class="btn btn-primary mt-3">Öğrencileri Kaydet</button>
+            </form>
         }
     </tbody>
 </table>

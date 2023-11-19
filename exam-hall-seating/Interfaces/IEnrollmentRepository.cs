@@ -8,7 +8,8 @@ namespace exam_hall_seating.Interfaces
     {
         Task<IEnumerable<Enrollment>> GetAllAsync();
         Task<Enrollment> GetByLectureIdAsync(int id);
-        Task<List<StudentViewModel>> GetAllStudentByLectureAsync(int lectureId);       
+        Task<List<StudentViewModel>> GetAllStudentByLectureAsync(int lectureId);
+        Task EnrollStudentsAsync(int lectureId, List<StudentViewModel> students);
         bool Add(Enrollment enrollment);
         bool Save();
 

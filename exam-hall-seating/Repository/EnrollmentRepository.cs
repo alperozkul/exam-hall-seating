@@ -28,17 +28,27 @@ namespace exam_hall_seating.Repository
 
         public async Task<List<StudentViewModel>> GetAllStudentByLectureAsync(int lectureId)
         {
-            var lecture = await _context.Lectures.FindAsync(lectureId);
+            Lecture lecture = await _context.Lectures.FindAsync(lectureId);
 
             if (lecture == null)
             {
                 return new List<StudentViewModel>();
             }
 
+            int lecturePeriod = ((lecture.Year - 1) * 2) + (int)lecture.Period; //3. yıl 1. dönem dersi (3-1)*2 + 1 = 5. dönem
+            int currentYear = DateTime.Now.Year;
+
             var studentsMatchingCondition = await _context.Students
-                .Where(student => student.Period == ((lecture.Year - 1) * 2) + (int)lecture.Period 
-                && !student.Enrollments.Any(enrollment => enrollment.StudentId == student.Id && enrollment.LectureId == lectureId)
-                || student.Enrollments.Any(enrollment => enrollment.Grade == Enrollment.Grades.F && enrollment.LectureId == lectureId))
+                .Where(student =>
+                    (student.Period == lecturePeriod &&
+                        !student.Enrollments.Any(enrollment =>
+                        enrollment.StudentId == student.Id && enrollment.LectureId == lectureId)) ||
+                    (student.Enrollments.Any(enrollment =>
+                        enrollment.StudentId == student.Id && enrollment.LectureId == lectureId &&
+                        enrollment.Grade == Enrollment.Grades.F &&
+                        !student.Enrollments.Any(enrollment =>
+                            enrollment.StudentId == student.Id && enrollment.LectureId == lectureId &&
+                            enrollment.Grade == null))))
                 .Select(student => new StudentViewModel
                 {
                     Number = student.Number,
@@ -52,6 +62,7 @@ namespace exam_hall_seating.Repository
             return studentsMatchingCondition;
         }
 
+
         public Task<Enrollment> GetByLectureIdAsync(int id)
         {
             throw new NotImplementedException();
@@ -62,5 +73,28 @@ namespace exam_hall_seating.Repository
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+
+        public async Task EnrollStudentsAsync(int lectureId, List<StudentViewModel> students)
+        {
+
+            //Lecture.Period bilgisini Enrollment.Period bilgisine çeviriyoruz.
+            Enrollment.Periods lecturePeriod = (Enrollment.Periods)_context.Lectures.FirstOrDefault(s => s.Id == lectureId).Period;
+
+            foreach (var studentViewModel in students)
+            {
+                var enrollment = new Enrollment
+                {
+                    StudentId = _context.Students.FirstOrDefault(s => s.Number == studentViewModel.Number).Id,
+                    LectureId = lectureId,
+                    Year = DateTime.Now.Year,
+                    Period = lecturePeriod,
+                    Grade = null
+                };
+                _context.Enrollments.Add(enrollment);
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
