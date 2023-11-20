@@ -1,9 +1,8 @@
 ﻿@using exam_hall_seating.ViewModels.ExamVM;
-@model CreateExamViewModel
+@model EditExamViewModel
 
-
-<form method="post" asp-action="Create">
-    
+<form method="post" asp-action="Edit">
+    <input type="hidden" value="Id" id="Id" />
     <div class="form-group col-md-3">
         <label asp-for="LectureId" style="font-weight:bold;">Ders</label>
         <select asp-for="LectureId" asp-items="ViewBag.Lectures" class="form-control">
@@ -27,5 +26,5 @@
         <span asp-validation-for="EndTime" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3" >Kaydet</button>
+    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
 </form>
