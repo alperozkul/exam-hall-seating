@@ -20,15 +20,17 @@ namespace exam_hall_seating.Controllers
         private readonly ILectureRepository _lectureRepository;
         private readonly IInstructorLectureRepository _instructorLectureRepository;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public InstructorController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository, ILectureRepository lectureRepository, IInstructorLectureRepository instructorLectureRepository, IMapper mapper, SignInManager<AppUser> signInManager)
+        public InstructorController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository, ILectureRepository lectureRepository, IInstructorLectureRepository instructorLectureRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _departmentRepository = departmentRepository;
             _lectureRepository = lectureRepository;
             _instructorLectureRepository = instructorLectureRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
             _signInManager = signInManager;
         }
 
@@ -136,10 +138,10 @@ namespace exam_hall_seating.Controllers
             return View();
         }
 
-
         public async Task<IActionResult> ListLectures(string id)
         {
-            var instructorLectures = await _instructorLectureRepository.ShowInstructorLectures(id);
+            var curUser = string.IsNullOrEmpty(id) ? _httpContextAccessor.HttpContext.User.GetUserId() : id;
+            var instructorLectures = await _instructorLectureRepository.ShowInstructorLectures(curUser);
 
             var listLectureVM = instructorLectures.Select(il => new ListLecturesViewModel
             {

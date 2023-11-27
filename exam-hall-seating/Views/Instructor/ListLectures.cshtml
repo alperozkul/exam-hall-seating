@@ -18,7 +18,11 @@
             <th scope="col">Ders Adı</th>
             <th scope="col">Yıl</th>
             <th scope="col">Dönem</th>
-            <th scope="col">İşlemler</th>
+            @if (User.IsInRole("admin"))
+            {
+                <th scope="col">İşlemler</th>
+            }
+            
 
         </tr>
     </thead>
@@ -34,12 +38,16 @@
                 <td>@item.Name</td>
                 <td>@item.Year</td>
                 <td>@item.Period</td>
-                <td>
-                    <form method="post" action="/Instructor/DeleteLecture" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
-                        <input type="hidden" name="id" value="@item.InstructorLectureId" />
-                        <button type="submit" class="btn btn-danger">Sil</button>
-                    </form>
-                </td>
+                @if (User.IsInRole("admin"))
+                {
+                    <td>
+                        <form method="post" action="/Instructor/DeleteLecture" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@item.InstructorLectureId" />
+                            <button type="submit" class="btn btn-danger">Sil</button>
+                        </form>
+                    </td>
+                }
+                
             </tr>
             i++;
         }
