@@ -1,0 +1,24 @@
+﻿@using exam_hall_seating.ViewModels.InstructorVM;
+
+@model AttendInstructorViewModel
+
+
+<form method="post" asp-action="AttendLecture">
+    <div class="form-group col-md-3">
+        <label asp-for="AppUserId">Öğretmen</label>
+        <select asp-for="AppUserId" asp-items="ViewBag.Instructors" class="form-control">
+            <option value="">-- Seçiniz --</option>
+        </select>
+        <span asp-validation-for="AppUserId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group col-md-3">
+        <label asp-for="LectureId">Ders</label>
+        <select asp-for="LectureId" asp-items="ViewBag.Lectures" class="form-control">
+            <option value="">-- Seçiniz --</option>
+        </select>
+        <span asp-validation-for="LectureId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
+</form>

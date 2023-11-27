@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
+using exam_hall_seating.Repository;
 using exam_hall_seating.ViewModels.EnrollmentVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,20 +10,20 @@ namespace exam_hall_seating.Controllers
 {
     public class EnrollmentController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ILectureRepository _lectureRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IMapper _mapper;
 
-        public EnrollmentController(ApplicationDbContext context, IEnrollmentRepository enrollmentRepository, IMapper mapper)
+        public EnrollmentController(ILectureRepository lectureRepository, IEnrollmentRepository enrollmentRepository, IMapper mapper)
         {
-            _context = context;
+            _lectureRepository = lectureRepository;
             _enrollmentRepository = enrollmentRepository;
             _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {         
-            ViewBag.Lectures = new SelectList(_context.Lectures, "Id", "Name");           
+            ViewBag.Lectures = new SelectList(await _lectureRepository.GetAllAsync(), "Id", "Name");           
             return View(new AssignmentViewModel());
         }
 
@@ -30,7 +31,7 @@ namespace exam_hall_seating.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAllStudent(AssignmentViewModel assignmentVM)
         {
-            ViewBag.Lectures = new SelectList(_context.Lectures, "Id", "Name");
+            ViewBag.Lectures = new SelectList(await _lectureRepository.GetAllAsync(), "Id", "Name");
             if (ModelState.IsValid)
             {
                 assignmentVM.Students = await _enrollmentRepository.GetAllStudentByLectureAsync(assignmentVM.LectureId);
