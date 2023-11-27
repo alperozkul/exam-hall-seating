@@ -24,7 +24,7 @@
                         <a class="nav-link" asp-controller="Home" asp-action="Index">Anasayfa</a>
                     </li>
                     @if (User.Identity.IsAuthenticated)
-                    {                       
+                    {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Classroom" asp-action="Index">Sınıf İşlemleri</a>
                         </li>
@@ -48,11 +48,17 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Student" asp-action="Index">Öğrenci İşlemleri</a>
-                        </li>
-                        @if (User.IsInRole("admin"))
+                        </li>                   
+                    @if (User.IsInRole("admin"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Instructor" asp-action="Index">Öğretmen İşlemleri</a>
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Öğretmen İşlemleri
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-controller="Instructor" asp-action="Index">Öğretmen İşlemleri</a></li>
+                                <li><a class="dropdown-item" asp-controller="Instructor" asp-action="AttendLecture">Öğretmen Ders İşlemleri</a></li>
+                            </ul>
                             </li>
                         }
                         <li class="nav-item dropdown">

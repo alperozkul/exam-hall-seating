@@ -1,0 +1,48 @@
+﻿@using exam_hall_seating.ViewModels.InstructorVM;
+
+@model List<ListLecturesViewModel>
+
+<div>
+    <h4>Öğretmen Bilgileri</h4>
+    <p><strong>Ad:</strong> @Model.FirstOrDefault()?.FirstName</p>
+    <p><strong>Soyad:</strong> @Model.FirstOrDefault()?.LastName</p>
+    <p><strong>Email:</strong> @Model.FirstOrDefault()?.Email</p>
+</div>
+
+<h3>Kayıtlı Dersler</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Ders Kodu</th>
+            <th scope="col">Ders Adı</th>
+            <th scope="col">Yıl</th>
+            <th scope="col">Dönem</th>
+            <th scope="col">İşlemler</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@item.Code</td>
+                <td>@item.Name</td>
+                <td>@item.Year</td>
+                <td>@item.Period</td>
+                <td>
+                    <form method="post" action="/Instructor/DeleteLecture" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
+                        <input type="hidden" name="id" value="@item.InstructorLectureId" />
+                        <button type="submit" class="btn btn-danger">Sil</button>
+                    </form>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+

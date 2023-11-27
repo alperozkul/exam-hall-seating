@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using exam_hall_seating.Data;
+using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.ViewModels.InstructorVM;
 using exam_hall_seating.ViewModels.StudentVM;
@@ -8,20 +9,25 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace exam_hall_seating.Controllers
 {
     public class InstructorController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly ApplicationDbContext _context;
+        private readonly IDepartmentRepository _departmentRepository;
+        private readonly ILectureRepository _lectureRepository;
+        private readonly IInstructorLectureRepository _instructorLectureRepository;
         private readonly IMapper _mapper;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public InstructorController(UserManager<AppUser> userManager, ApplicationDbContext context, IMapper mapper, SignInManager<AppUser> signInManager)
+        public InstructorController(UserManager<AppUser> userManager, IDepartmentRepository departmentRepository, ILectureRepository lectureRepository, IInstructorLectureRepository instructorLectureRepository, IMapper mapper, SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
-            _context = context;
+            _departmentRepository = departmentRepository;
+            _lectureRepository = lectureRepository;
+            _instructorLectureRepository = instructorLectureRepository;
             _mapper = mapper;
             _signInManager = signInManager;
         }
@@ -36,9 +42,9 @@ namespace exam_hall_seating.Controllers
         }
 
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            ViewBag.Departments = new SelectList(await _departmentRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -66,7 +72,7 @@ namespace exam_hall_seating.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            ViewBag.Departments = new SelectList(await _departmentRepository.GetAllAsync(), "Id", "Name");
 
             var instructor = await _userManager.FindByIdAsync(id);
             if (instructor == null) return View("Error");
@@ -107,6 +113,70 @@ namespace exam_hall_seating.Controllers
             await _userManager.DeleteAsync(appUser);
 
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> AttendLecture()
+        {
+
+            await InstructorLectureViewBag();
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AttendLecture(AttendInstructorViewModel attendInstructorVM)
+        {
+            await InstructorLectureViewBag();
+
+            if (ModelState.IsValid)
+            {
+                InstructorLecture instructorLecture = _mapper.Map<InstructorLecture>(attendInstructorVM);
+                _instructorLectureRepository.Add(instructorLecture);
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
+
+        public async Task<IActionResult> ListLectures(string id)
+        {
+            var instructorLectures = await _instructorLectureRepository.ShowInstructorLectures(id);
+
+            var listLectureVM = instructorLectures.Select(il => new ListLecturesViewModel
+            {
+                InstructorLectureId = il.Id,
+                AppUserId = id,
+                FirstName = il.AppUser.FirstName,
+                LastName = il.AppUser.LastName,
+                Email = il.AppUser.Email,
+                AppUser = il.AppUser,
+                Lecture = il.Lecture,
+                LectureId = il.LectureId,
+                Code = il.Lecture.Code,
+                Name = il.Lecture.Name,
+                Year = il.Lecture.Year,
+                Period = il.Lecture.Period
+            }).ToList();
+            return View(listLectureVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteLecture(int id)
+        {
+            InstructorLecture instructorLecture = await _instructorLectureRepository.GetByIdAsync(id);
+            _instructorLectureRepository.Delete(instructorLecture);
+            return RedirectToAction("Index");
+        }
+        private async Task InstructorLectureViewBag()
+        {
+            ViewBag.Lectures = new SelectList(
+                (await _lectureRepository.GetAllAsync())
+                .OrderBy(lecture => lecture.Name)
+                , "Id", "Name");
+            ViewBag.Instructors = new SelectList(await _userManager.Users
+                .Where(user => user.DepartmentId != null)
+                .OrderBy(instructor => instructor.FirstName)
+                .ToListAsync(),
+                "Id", "FullName");
         }
     }
 }

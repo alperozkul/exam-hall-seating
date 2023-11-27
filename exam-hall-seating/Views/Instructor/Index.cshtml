@@ -37,6 +37,7 @@
                 <td>
                     <div class="btn-group">
                         <a type="button" asp-controller="Instructor" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary me-1">Düzenle</a>
+                        <a type="button" asp-controller="Instructor" asp-action="ListLectures" asp-route-id="@item.Id" class="btn btn-success me-1">Dersler</a>
                         @*<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>*@
                         <form method="post" action="/Instructor/Delete" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="id" value="@item.Id" />

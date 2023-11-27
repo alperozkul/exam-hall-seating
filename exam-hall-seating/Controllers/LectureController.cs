@@ -12,13 +12,13 @@ namespace exam_hall_seating.Controllers
 {
     public class LectureController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly ILectureRepository _lectureRepository;
         private readonly IMapper _mapper;
 
-        public LectureController(ApplicationDbContext context, ILectureRepository lectureRepository, IMapper mapper)
+        public LectureController(IDepartmentRepository departmentRepository, ILectureRepository lectureRepository, IMapper mapper)
         {
-            _context = context;
+            _departmentRepository = departmentRepository;
             _lectureRepository = lectureRepository;
             _mapper = mapper;
         }
@@ -29,9 +29,9 @@ namespace exam_hall_seating.Controllers
             return View(lectures);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            ViewBag.Departments = new SelectList(await _departmentRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -50,7 +50,7 @@ namespace exam_hall_seating.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+            ViewBag.Departments = new SelectList(await _departmentRepository.GetAllAsync(), "Id", "Name");
 
             var lecture = await _lectureRepository.GetByIdAsync(id);
             if (lecture == null) return View("Error");
