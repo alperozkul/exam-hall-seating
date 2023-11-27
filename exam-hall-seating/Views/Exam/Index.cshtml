@@ -5,6 +5,14 @@
 }
 <h1>Sınav CRUD işlemleri</h1>
 <a type="button" asp-controller="Exam" asp-action="Create" class="btn btn-primary">Sınav Ekle</a>
+<div style="float: right;">
+    <strong><label for="searchInput" style="margin-right: 100px;">Öğrenci Ara:</label></strong>
+    <input type="text" id="searchInput" class="form-control" placeholder="Numara">
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="~/js/search-script.js"></script>
+
 <table class="table">
     <thead>
         <tr>
