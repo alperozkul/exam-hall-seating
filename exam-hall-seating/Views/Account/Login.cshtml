@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-md-6 offset-3">
         <p>
-            <h4>Giriş Yap</h4>
+            <h3>Giriş Yap</h3>
         </p>
         @if (TempData["Error"] != null)
         {
@@ -22,12 +22,12 @@
                 <form asp-action="Login">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group">
-                        <label asp-for="Email" class="control-label">Email Adresi</label>
+                        <label asp-for="Email" class="control-label"><strong>Email Adresi</strong></label>
                         <input asp-for="Email" class="form-control">
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Password" class="control-label">Şifre</label>
+                        <label asp-for="Password" class="control-label"><strong>Şifre</strong></label>
                         <input asp-for="Password" class="form-control" />
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>

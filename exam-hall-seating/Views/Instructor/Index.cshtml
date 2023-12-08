@@ -1,4 +1,6 @@
-﻿@model IEnumerable<AppUser>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<AppUser>
 @{
     ViewData["Title"] = "Öğretmen İşlemleri";
 }
@@ -9,7 +11,7 @@
 <a type="button" asp-controller="Instructor" asp-action="Create" class="btn btn-primary">Öğretmen Ekle</a>
 <div style="float: right;">
     <strong><label for="searchInput" style="margin-right: 100px;">Öğretmen Ara:</label></strong>
-    <input type="text" id="searchInput" class="form-control" placeholder="Numara">
+    <input type="text" id="searchInput" class="form-control" placeholder="Mail">
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -45,7 +47,6 @@
                     <div class="btn-group">
                         <a type="button" asp-controller="Instructor" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary me-1">Düzenle</a>
                         <a type="button" asp-controller="Instructor" asp-action="ListLectures" asp-route-id="@item.Id" class="btn btn-success me-1">Dersler</a>
-                        @*<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sil</button>*@
                         <form method="post" action="/Instructor/Delete" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="id" value="@item.Id" />
                             <button type="submit" class="btn btn-danger">Sil</button>
@@ -57,23 +58,13 @@
             i++;
         }
 
-        @*<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Dikkat</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Öğrenciyi silmek istediğinize emin misiniz?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                        <button type="button" class="btn btn-danger">Sil</button>
-                    </div>
-                </div>
-            </div>
-        </div>*@
-
     </tbody>
 </table>
+
+<div>
+    @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page}),
+    new X.PagedList.Web.Common.PagedListRenderOptions {
+    LiElementClasses = new string[] {"page-item"},
+    PageClasses = new string[] { "page-link" }
+    })
+</div>

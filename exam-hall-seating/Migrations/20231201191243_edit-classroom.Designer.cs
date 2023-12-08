@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using exam_hall_seating.Data;
 
@@ -11,9 +12,11 @@ using exam_hall_seating.Data;
 namespace exam_hall_seating.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231201191243_edit-classroom")]
+    partial class editclassroom
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,49 +244,29 @@ namespace exam_hall_seating.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("Block")
+                        .HasColumnType("int");
+
                     b.Property<string>("ClassName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Column")
+                        .HasColumnType("int");
 
                     b.Property<int>("Floor")
                         .HasColumnType("int");
 
                     b.Property<byte[]>("ImageData")
+                        .IsRequired()
                         .HasColumnType("varbinary(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Classrooms");
-                });
-
-            modelBuilder.Entity("exam_hall_seating.Models.ClassroomDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BlockNo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClassroomId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Column")
-                        .HasColumnType("int");
 
                     b.Property<int>("Row")
                         .HasColumnType("int");
 
-                    b.Property<string>("ValidColumns")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassroomId");
-
-                    b.ToTable("ClassroomsDetail");
+                    b.ToTable("Classrooms");
                 });
 
             modelBuilder.Entity("exam_hall_seating.Models.Department", b =>
@@ -370,7 +353,7 @@ namespace exam_hall_seating.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassroomDetailId")
+                    b.Property<int>("ClassroomId")
                         .HasColumnType("int");
 
                     b.Property<int>("Column")
@@ -387,7 +370,7 @@ namespace exam_hall_seating.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClassroomDetailId");
+                    b.HasIndex("ClassroomId");
 
                     b.HasIndex("ExamId");
 
@@ -559,17 +542,6 @@ namespace exam_hall_seating.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("exam_hall_seating.Models.ClassroomDetail", b =>
-                {
-                    b.HasOne("exam_hall_seating.Models.Classroom", "Classroom")
-                        .WithMany("ClassroomDetails")
-                        .HasForeignKey("ClassroomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Classroom");
-                });
-
             modelBuilder.Entity("exam_hall_seating.Models.Enrollment", b =>
                 {
                     b.HasOne("exam_hall_seating.Models.Lecture", "Lecture")
@@ -602,9 +574,9 @@ namespace exam_hall_seating.Migrations
 
             modelBuilder.Entity("exam_hall_seating.Models.ExamSeat", b =>
                 {
-                    b.HasOne("exam_hall_seating.Models.ClassroomDetail", "ClassroomDetail")
+                    b.HasOne("exam_hall_seating.Models.Classroom", "Classroom")
                         .WithMany("ExamSeats")
-                        .HasForeignKey("ClassroomDetailId")
+                        .HasForeignKey("ClassroomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -620,7 +592,7 @@ namespace exam_hall_seating.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ClassroomDetail");
+                    b.Navigation("Classroom");
 
                     b.Navigation("Exam");
 
@@ -674,11 +646,6 @@ namespace exam_hall_seating.Migrations
                 });
 
             modelBuilder.Entity("exam_hall_seating.Models.Classroom", b =>
-                {
-                    b.Navigation("ClassroomDetails");
-                });
-
-            modelBuilder.Entity("exam_hall_seating.Models.ClassroomDetail", b =>
                 {
                     b.Navigation("ExamSeats");
                 });

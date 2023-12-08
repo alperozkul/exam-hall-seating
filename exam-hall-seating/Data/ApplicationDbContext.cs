@@ -11,6 +11,7 @@ namespace exam_hall_seating.Data
             
         }
         public DbSet<Classroom> Classrooms { get; set; }
+        public DbSet<ClassroomDetail> ClassroomsDetail { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Exam> Exams { get; set; }

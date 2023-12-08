@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Exam>
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@model IEnumerable<Exam>
 
 @{
     ViewData["Title"] = "Sınav İşlemleri";
@@ -6,8 +8,8 @@
 <h1>Sınav CRUD işlemleri</h1>
 <a type="button" asp-controller="Exam" asp-action="Create" class="btn btn-primary">Sınav Ekle</a>
 <div style="float: right;">
-    <strong><label for="searchInput" style="margin-right: 100px;">Öğrenci Ara:</label></strong>
-    <input type="text" id="searchInput" class="form-control" placeholder="Numara">
+    <strong><label for="searchInput" style="margin-right: 100px;">Sınav Ara:</label></strong>
+    <input type="text" id="searchInput" class="form-control" placeholder="Ders Kodu">
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -58,3 +60,11 @@
         }
     </tbody>
 </table>
+
+<div>
+    @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page}),
+    new X.PagedList.Web.Common.PagedListRenderOptions {
+    LiElementClasses = new string[] {"page-item"},
+    PageClasses = new string[] { "page-link" }
+    })
+</div>

@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<Student>
+
+
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
 @{
     ViewData["Title"] = "Öğrenci İşlemleri";
 }
@@ -15,8 +19,10 @@
 
 <table class="table" >
     <thead>
+        
         <tr>
             <th scope="col">#</th>
+            <th scope="col">Numara</th>
             <th scope="col">Ad</th>
             <th scope="col">Soyad</th>
             <th scope="col" >Mail</th>
@@ -55,7 +61,16 @@
             </tr>
             i++;
         }
+        
     </tbody>
 </table>
+
+<div>
+    @Html.PagedListPager((IPagedList) Model, page => Url.Action("Index", new {page}), 
+    new X.PagedList.Web.Common.PagedListRenderOptions {
+    LiElementClasses = new string[] {"page-item"},
+    PageClasses = new string[] { "page-link" }
+    })
+</div>
 
 
