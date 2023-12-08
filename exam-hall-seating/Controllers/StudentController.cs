@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
 using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
@@ -6,6 +7,8 @@ using exam_hall_seating.ViewModels.StudentVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
+
 
 namespace exam_hall_seating.Controllers
 {
@@ -24,10 +27,11 @@ namespace exam_hall_seating.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             IEnumerable<Student> students = await _studentRepository.GetAllAsync();
-            return View(students);
+            var pagedList = students.ToPagedList(page, 10);
+            return View(pagedList);
         }
 
         public async Task<IActionResult> Create()

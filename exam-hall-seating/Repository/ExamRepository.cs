@@ -28,7 +28,10 @@ namespace exam_hall_seating.Repository
 
         public async Task<IEnumerable<Exam>> GetAllAsync()
         {
-            return await _context.Exams.Include(i => i.Lecture).ToListAsync();
+            return await _context.Exams
+                .Include(i => i.Lecture)
+                .OrderByDescending(i => i.Date)
+                .ToListAsync();
         }
 
         public async Task<Exam> GetByIdAsync(int id)

@@ -1,0 +1,38 @@
+﻿@using exam_hall_seating.ViewModels.ClassroomVM;
+
+@model DetailClassroomViewModel
+
+
+<div>
+    <h4>Sınıf Bilgileri</h4>
+    <p><strong>Sınıf Kod:</strong> @Model.Classroom.ClassName</p>
+    <p><strong>Kat:</strong> @Model.Classroom.Floor</p>
+    @*<img src="data:image/png;base64, @Convert.ToBase64String(@Model.Classroom.ImageData)" class="card-img-left" alt="Classroom Image">*@
+</div>
+
+<h2>Sınıf Krokisi</h2>
+
+@if (Model.ClassroomDetail != null && Model.ClassroomDetail.Any())
+{
+    <div style="display: inline-block; margin-right: 40px;">
+        @foreach (var blok in @Model.ClassroomDetail)
+        {
+            <div style="float: left; margin-right: 40px;">
+                <h3>Blok No: @blok.BlockNo</h3>
+                <!-- Blok detayları -->
+                <div>
+                    @for (int i = 0; i < blok.Row; i++)
+                    {
+                        <div style="clear: both;">
+                            @for (int j = 0; j < blok.Column; j++)
+                            {
+                                <div style="float: left; width: 60px; height: 40px; border: 1px solid #000; margin-right: 5px; margin-bottom: 5px; background-color: lightgrey"></div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+

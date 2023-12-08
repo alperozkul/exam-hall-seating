@@ -1,4 +1,61 @@
-﻿@{
+﻿
+@model IEnumerable<Classroom>
+
+@{
     ViewData["Title"] = "Sınıf İşlemleri";
 }
-<h1>Sınıf CRUD işlemleri</h1>
+
+<h1>Sınıf Listesi</h1>
+<hr style="width:100%; height:5px" />
+<a type="button" asp-controller="Classroom" asp-action="Create" class="btn btn-success">Sınıf Ekle</a>
+
+@{
+    int currentFloor = 0;
+}
+<h2>@currentFloor. Kat</h2>
+<hr style="width:100%; height:4px" />
+<div class="row row-cols-1 row-cols-md-4 g-4 mt-2">
+    @foreach(var card in Model)
+    {
+        if (card.Floor != @currentFloor)
+        {
+            currentFloor = card.Floor;
+            <div class="w-100"></div>
+            <h2>@currentFloor. Kat</h2>
+            
+            <hr style="width:100%; height:4px"  />
+            
+            <div class="row row-cols-1 row-cols-md-4 g-4 mt-2"></div>           
+            <div class="w-100"></div>
+            
+        }
+        <div class="col">
+            <div class="card">
+                @if (!(card.ImageData == null))
+                {
+                    <img src="data:image/png;base64, @Convert.ToBase64String(card.ImageData)" class="card-img-top" alt="Classroom Image">
+                }
+                else
+                {
+                    <div class="card-img-top text-center" >
+                        <span class="display-2 text-muted">Sınıf Resmi Yok</span>
+                    </div>
+                }
+                <div class="card-body">
+                    <h4 class="card-title">Sınıf @card.ClassName</h4>
+                    <hr>
+                    <div class="btn-group">
+                        <form method="post" asp-controller="Classroom" asp-action="Detail">
+                            <input type="hidden" name="id" value="@card.Id" />
+                            <button type="submit" class="btn btn-primary ms-1">Detay</button>
+                        </form>                
+                        <form method="post" asp-controller="Classroom" asp-action="Delete" onsubmit="return confirm('Sınıfı silmek istediğinize emin misiniz?');">
+                            <input type="hidden" name="id" value="@card.Id" />
+                            <button type="submit" class="btn btn-danger ms-1">Sil</button>
+                        </form>
+                    </div>   
+                </div>
+            </div>
+        </div>
+    }    
+</div>

@@ -4,15 +4,19 @@ using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.ViewModels.InstructorVM;
 using exam_hall_seating.ViewModels.StudentVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Runtime.InteropServices;
+using X.PagedList;
 
 namespace exam_hall_seating.Controllers
 {
+    [Authorize(Roles = AppRole.Admin)]
     public class InstructorController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -34,13 +38,14 @@ namespace exam_hall_seating.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
             var instructors = _userManager.Users
                 .Where(user => user.DepartmentId != null)
                 .Include(i => i.Department)
                 .ToList();
-            return View(instructors);
+            var pagedList = instructors.ToPagedList(page, 10);
+            return View(pagedList);
         }
 
 
@@ -138,6 +143,7 @@ namespace exam_hall_seating.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> ListLectures(string id)
         {
             var curUser = string.IsNullOrEmpty(id) ? _httpContextAccessor.HttpContext.User.GetUserId() : id;

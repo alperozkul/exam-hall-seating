@@ -8,6 +8,7 @@ using exam_hall_seating.ViewModels.ExamVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace exam_hall_seating.Controllers
 {
@@ -24,10 +25,11 @@ namespace exam_hall_seating.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
             IEnumerable<Exam> exams = await _examRepository.GetAllAsync();
-            return View(exams);
+            var pagedList = exams.ToPagedList(page, 10);
+            return View(pagedList);
         }
 
         public async Task<IActionResult> Create()

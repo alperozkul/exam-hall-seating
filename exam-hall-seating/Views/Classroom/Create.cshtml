@@ -1,0 +1,104 @@
+﻿@using exam_hall_seating.ViewModels.ClassroomVM;
+@model CreateClassroomViewModel
+
+<form asp-action="Create" asp-controller="Classroom" method="post" enctype="multipart/form-data">
+    <h3>Genel Sınıf Bilgileri</h3>
+    <div class="row">
+        <input type="hidden" asp-for="ClassroomData" value="@Model.ClassroomData" />
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="@Model.ClassroomData.ClassName"><strong>Sınıf Kodu</strong></label>
+            <input asp-for="@Model.ClassroomData.ClassName" class="form-control" placeholder="Kod">
+            <span asp-validation-for="@Model.ClassroomData.ClassName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="@Model.ClassroomData.Floor"><strong>Kat Bilgisi</strong></label>
+            <input asp-for="@Model.ClassroomData.Floor" class="form-control" placeholder="0,1,2..">
+            <span asp-validation-for="@Model.ClassroomData.Floor" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="@Model.ClassroomData.ImageData"><strong>Sınıf Krokisi (Zorunlu Değil)</strong></label>
+            <input type="file" name="image" class="form-control" />
+            <span asp-validation-for="@Model.ClassroomData.ImageData" class="text-danger"></span>
+        </div>
+
+    </div>
+    <div class="alert alert-info mt-3" role="alert">
+        Not: Sınıf kroki işlemlerini bitirdikten sonra sınıfı oluşturabilirsiniz.
+    </div>  
+    <button type="submit" class="btn btn-success ">Sınıf Oluştur</button>
+
+    <hr />
+</form>
+
+
+<form asp-action="AddBlock" asp-controller="Classroom" method="post"> 
+    <h3>Kroki Bilgileri</h3>
+    <div class="row">
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="BlockNumber"><strong>Blok No</strong></label>
+            <input asp-for="BlockNumber" class="form-control" placeholder="Blok Bilgisi">
+            <span asp-validation-for="BlockNumber" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="Row"><strong>Toplam Satır</strong></label>
+            <input asp-for="Row" class="form-control" placeholder="Satır Bilgisi">
+            <span asp-validation-for="Row" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-3 mt-3">
+            <label asp-for="Column"><strong>Toplam Sütun</strong></label>
+            <input asp-for="Column" class="form-control" placeholder="Sütun Bilgisi">
+            <span asp-validation-for="Column" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Blok Ekle</button>
+    </div>
+    
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            <ul>
+                @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@modelError.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+    
+    
+</form>
+
+
+@if (Model.ClassroomDetail != null && Model.ClassroomDetail.Any())
+{
+    <div style="display: inline-block; margin-right: 40px;">
+        @foreach (var blok in Model.ClassroomDetail)
+        {
+            <div style="float: left; margin-right: 40px;">
+                <h3>Blok No: @blok.BlockNo</h3>
+                <!-- Blok detayları -->
+                <div>
+                    @for (int i = 0; i < blok.Row; i++)
+                    {
+                        <div style="clear: both;">
+                            @for (int j = 0; j < blok.Column; j++)
+                            {
+                                <div style="float: left; width: 60px; height: 40px; border: 1px solid #000; margin-right: 5px; margin-bottom: 5px; background-color: lightgrey"></div>
+                            }
+                        </div>
+                    }
+
+                    <!-- Blok silme formu -->
+                    <form asp-action="DeleteBlock" asp-controller="Classroom" method="post">
+                        <input type="hidden" name="blockNo" value="@blok.BlockNo" />
+                        <input type="submit" value="Blok Sil" />
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
