@@ -11,6 +11,26 @@
 </div>
 <hr />
 
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    <input type="hidden" asp-for="LectureId" value="@Model.LectureId" />
+    <input type="hidden" asp-for="LectureName" value="@Model.LectureName" />
+    <input type="hidden" asp-for="Date" value="@Model.Date" />
+    <input type="hidden" asp-for="StartTime" value="@Model.StartTime" />
+    <input type="hidden" asp-for="EndTime" value="@Model.EndTime" />
+    <input type="hidden" asp-for="Students" value="@Model.Students" />
+    <div class="row">
+        @*<label>Dosya seç</label>*@
+        <input type="file" name="file" />
+        <span class="error-message" style="color: #ff0000; font-size: 20px;">@ViewData["FileError"]</span>
+    </div>
+    <div class="row" style="padding-top: 10px;">
+        <div class="col-3">
+            <input type="submit" asp-controller="Exam" asp-action="ArrangementWithExcel" class="btn btn-primary" value="Excel Dosyasını Oku" />
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
 
@@ -32,7 +52,7 @@
                 <th scope="row">@i</th>
                 <td>@item.Number</td>
                 <td>@item.FirstName @item.LastName</td>
-                @*<td>@item.Mail</td>           *@
+                @*<td>@item.Mail</td>*@
             </tr>
             i++;
         }

@@ -4,6 +4,7 @@ using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.Repository;
+using exam_hall_seating.Services.Interfaces;
 using exam_hall_seating.ViewModels.ExamVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,13 +19,15 @@ namespace exam_hall_seating.Controllers
         private readonly ILectureRepository _lectureRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IMapper _mapper;
+        private readonly IExcelService _excelService;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService)
         {
             _examRepository = examRepository;
             _lectureRepository = lectureRepository;
             _mapper = mapper;
             _enrollmentRepository = enrollmentRepository;
+            _excelService = excelService;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -106,6 +109,22 @@ namespace exam_hall_seating.Controllers
             arrangementVM.Students = enrolledStudents;
 
             return View(arrangementVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ArrangementWithExcel(ArrangementViewModel arrangementVM, IFormFile file)
+        {
+            if (file == null)
+            {
+                ViewData["FileError"] = "Lütfen Excel dosyası seçiniz.";
+                return View("Arrangement", arrangementVM);
+            }
+            arrangementVM.Students.Clear();
+
+            List<EnrolledStudentViewModel> enrolledStudents = _excelService.ReadExcelFileAsync(file);
+            arrangementVM.Students = enrolledStudents;
+            return View("Arrangement", arrangementVM);
+            
         }
 
     }
