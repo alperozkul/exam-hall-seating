@@ -25,4 +25,12 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Exam\Arrangement.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Exam\Arrangement.cshtml" />
+  </ItemGroup>
+
 </Project>

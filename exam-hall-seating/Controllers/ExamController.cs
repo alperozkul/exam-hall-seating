@@ -16,13 +16,15 @@ namespace exam_hall_seating.Controllers
     {
         private readonly IExamRepository _examRepository;
         private readonly ILectureRepository _lectureRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IMapper _mapper;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository)
         {
             _examRepository = examRepository;
             _lectureRepository = lectureRepository;
             _mapper = mapper;
+            _enrollmentRepository = enrollmentRepository;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -81,6 +83,29 @@ namespace exam_hall_seating.Controllers
             Exam exam = await _examRepository.GetByIdAsync(id);
             _examRepository.Delete(exam);
             return RedirectToAction("Index");
+        }
+
+        
+        public async Task<IActionResult> Arrangement(int id)
+        {
+            
+            var exam = await _examRepository.GetByIdAsync(id);
+            var lecture = await _lectureRepository.GetByIdAsync(exam.LectureId);
+            var enrolledStudents = await _enrollmentRepository.GetAllStudentsByLectureId(exam.LectureId);
+
+            if (exam == null) return View("Error");
+
+            ArrangementViewModel arrangementVM = new ArrangementViewModel();
+
+            arrangementVM.Id = id;
+            arrangementVM.Date = exam.Date;
+            arrangementVM.StartTime = exam.StartTime;
+            arrangementVM.EndTime = exam.EndTime;
+            arrangementVM.LectureName = lecture.Name;
+            arrangementVM.LectureId = lecture.Id;
+            arrangementVM.Students = enrolledStudents;
+
+            return View(arrangementVM);
         }
 
     }

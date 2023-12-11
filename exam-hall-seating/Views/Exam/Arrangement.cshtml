@@ -1,0 +1,41 @@
+﻿@using exam_hall_seating.ViewModels.ExamVM;
+@model ArrangementViewModel
+
+
+<div>
+    <h4>Sınav Bilgileri</h4>
+    <p><strong>Ders Adı:</strong> @Model.LectureName</p>
+    <p><strong>Sınav Tarihi:</strong> @Model.Date.ToString("dd/MM/yyyy")</p>
+    <p><strong>Başlangıç Saati:</strong> @($"{(int)(Model.StartTime.TotalHours):D2}:{Model.StartTime.Minutes:D2}")</p>
+    <p><strong>Bitiş Saati:</strong> @($"{(int)(Model.EndTime.TotalHours):D2}:{Model.EndTime.Minutes:D2}")</p>
+</div>
+<hr />
+
+<table class="table">
+    <thead>
+
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Numara</th>
+            <th scope="col">Ad Soyad</th>
+            @*<th scope="col">Mail</th>*@
+
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @foreach (var item in Model.Students)
+        {
+            <tr>
+                <th scope="row">@i</th>
+                <td>@item.Number</td>
+                <td>@item.FirstName @item.LastName</td>
+                @*<td>@item.Mail</td>           *@
+            </tr>
+            i++;
+        }
+
+    </tbody>
+</table>
