@@ -7,16 +7,15 @@ namespace exam_hall_seating.Models
     {
         [Key]
         public int Id { get; set; }
-        public int Row { get; set; }
-        public int Column { get; set; }
+        public int SeatNumber { get; set; }
 
         [ForeignKey("Exam")]
         public int ExamId { get; set; }
         public Exam? Exam { get; set; }
 
-        [ForeignKey("ClassroomDetail")]
-        public int ClassroomDetailId { get; set; }
-        public ClassroomDetail? ClassroomDetail { get; set; }
+        [ForeignKey("Classroom")]
+        public int ClassroomId { get; set; }
+        public Classroom? Classroom { get; set; }
 
         [ForeignKey("Student")]
         public int StudentId { get; set; }

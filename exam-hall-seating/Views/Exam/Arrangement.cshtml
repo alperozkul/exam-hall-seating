@@ -1,0 +1,126 @@
+﻿@using exam_hall_seating.ViewModels.ExamVM;
+@model ArrangementViewModel
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Sınav Bilgileri</h4>
+        <p><strong>Ders Adı:</strong> @Model.LectureName</p>
+        <p><strong>Sınav Tarihi:</strong> @Model.Date.ToString("dd/MM/yyyy")</p>
+        <p><strong>Başlangıç Saati:</strong> @($"{(int)(Model.StartTime.TotalHours):D2}:{Model.StartTime.Minutes:D2}")</p>
+        <p><strong>Bitiş Saati:</strong> @($"{(int)(Model.EndTime.TotalHours):D2}:{Model.EndTime.Minutes:D2}")</p>
+        <p><strong>Toplam Öğrenci:</strong> @Model.Students.Count</p>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Öğrenci Excel Dosyası</h4>
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+            <div class="row">
+                <div class="col">
+                    <input type="file" name="file" id="fileInput" />
+                    <span class="error-message" style="color: #ff0000; font-size: 20px;">@ViewData["FileError"]</span>
+                </div>
+
+                <div style="padding-top: 10px">
+                    <input type="submit" asp-controller="Exam" asp-action="ArrangementWithExcel" class="btn btn-primary" value="Excel Dosyasını Oku" onclick="return validateFile();" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+
+<h2>Sınıf Seçimi</h2>
+
+<form method="post" asp-controller="Exam" asp-action="ClassArrangement">
+    <input type="hidden" asp-for="Id" value="@Model.Id" />
+    @for (var j = 0; j < Model.Students.Count; j++)
+    {
+        <input type="hidden" name="Students[@j].Id" value="@Model.Students[j].Id">
+        <input type="hidden" name="Students[@j].Number" value="@Model.Students[j].Number">
+        <input type="hidden" name="Students[@j].FirstName" value="@Model.Students[j].FirstName">
+        <input type="hidden" name="Students[@j].LastName" value="@Model.Students[j].LastName">
+        <input type="hidden" name="Students[@j].Mail" value="@Model.Students[j].Mail">
+    }
+    <div class="row">
+        <div class="col-md-3">
+            <select multiple id="select-classroom" asp-for="SelectedClassrooms" asp-items="ViewBag.Classrooms"></select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">Sınıflara yerleştir</button>
+        </div>
+    </div>
+</form>
+<hr />
+
+<div>
+    @foreach (var className in Model.Students.Select(s => s.ClassName).Distinct())
+    {
+        var uniqueId = string.IsNullOrEmpty(className) ? "null" : className; // Null için özel kimlik
+
+        <input type="checkbox" class="btn-check" onclick="showStudents('@uniqueId')" id="btn-@uniqueId" autocomplete="off">
+        if(uniqueId == "null")
+        {
+            <label class="btn btn-outline-success mt-3" for="btn-@uniqueId">Yerleştirilmeyen Öğrenci Listesi</label>
+        }
+        else
+        {
+            <label class="btn btn-outline-success mt-3" for="btn-@uniqueId">@className Öğrenci Listesi</label>
+        }       
+    }
+</div>
+
+@foreach (var className in Model.Students.Select(s => s.ClassName).Distinct())
+{
+    var uniqueId = string.IsNullOrEmpty(className) ? "null" : className; // Null için özel kimlik
+
+    <div id="@uniqueId" style="display:none;">
+        
+        <h3>@(className ?? "Yerleştirilemeyen") Öğrenci Listesi</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Numara</th>
+                    <th>Ad Soyad</th>
+                    <th>Mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students.Where(s => s.ClassName == className))
+                {
+                    <tr>
+                        <td>@student.Number</td>
+                        <td>@student.FirstName @student.LastName</td>
+                        <td>@student.Mail</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<script>
+    function showStudents(className) {      
+        $('#' + className).toggle();
+    }
+</script>
+
+
+<script>
+    function validateFile() {
+        var fileInput = document.getElementById('fileInput');
+        if (fileInput.files.length === 0) {
+            alert('Lütfen bir dosya seçiniz.');
+            return false; // Dosya seçilmediği için submit işlemi durdurulur
+        }
+        return true; // Dosya seçildiyse submit işlemi devam eder
+    }
+</script>
+
+<script>
+    new MultiSelectTag('select-classroom')  // id
+</script>

@@ -2,6 +2,7 @@
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.ViewModels.EnrollmentVM;
+using exam_hall_seating.ViewModels.ExamVM;
 using Microsoft.EntityFrameworkCore;
 
 namespace exam_hall_seating.Repository
@@ -96,5 +97,18 @@ namespace exam_hall_seating.Repository
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<EnrolledStudentViewModel>> GetAllStudentsByLectureId(int lectureId)
+        {
+            List<EnrolledStudentViewModel> enrolledStudents = await _context.Enrollments.Where(x => x.LectureId == lectureId && x.Grade == null)
+               .Select(x => new EnrolledStudentViewModel
+               {
+                   Id = x.Student.Id,
+                   Number = x.Student.Number,
+                   FirstName = x.Student.FirstName,
+                   LastName = x.Student.LastName,
+                   Mail = x.Student.Mail          
+               }).ToListAsync();
+            return enrolledStudents;
+        }
     }
 }

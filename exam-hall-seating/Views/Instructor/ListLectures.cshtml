@@ -41,7 +41,7 @@
                 @if (User.IsInRole("admin"))
                 {
                     <td>
-                        <form method="post" action="/Instructor/DeleteLecture" onsubmit="return confirm('Öğretmeni silmek istediğinize emin misiniz?');">
+                        <form method="post" action="/Instructor/DeleteLecture" onsubmit="return confirm('Dersi silmek istediğinize emin misiniz?');">
                             <input type="hidden" name="id" value="@item.InstructorLectureId" />
                             <button type="submit" class="btn btn-danger">Sil</button>
                         </form>

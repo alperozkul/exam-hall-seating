@@ -22,32 +22,39 @@ namespace exam_hall_seating.Repository
             return Save();
         }
 
-        public Task<ClassroomDetail> AddBlock(ClassroomDetail block)
-        {
-            throw new NotImplementedException();
-        }
         public List<ClassroomDetail> GetAllDetailById(int id) 
         {
             List<ClassroomDetail> allClasses = _context.ClassroomsDetail.Where(x => x.ClassroomId == id).ToList();
             return allClasses;
         }
 
-        public async Task CreateClassroomBlocksAsync(List<ClassroomDetail> classroomDetail)
+        public async Task<int> CreateClassroomBlocksAsync(List<ClassroomDetail> classroomDetail)
         {
-            foreach(var block in classroomDetail)
+            int totalBlock = classroomDetail.Count;
+            int totalCapacity = 0;
+            for(int i = 0; i < totalBlock; i++)
             {
-                SeatArrangement(block);
-                await _context.ClassroomsDetail.AddAsync(block);
+                if(i == totalBlock - 1 && classroomDetail[i].Column == 2)
+                {
+                    classroomDetail[i].ValidColumns = "01";
+                    totalCapacity += 1 * classroomDetail[i].Row;
+                }
+                else
+                {
+                    totalCapacity += TotalValidColumns(classroomDetail[i]);
+                }
+                await _context.ClassroomsDetail.AddAsync(classroomDetail[i]);
             }
-            await _context.SaveChangesAsync();            
+            await _context.SaveChangesAsync(); 
+            return totalCapacity;
         }
 
-        public void SeatArrangement(ClassroomDetail classroomDetail)
+        public int TotalValidColumns(ClassroomDetail classroomDetail)
         {
+            int totalCapacity = 0;
+            int totalColumn = classroomDetail.Column;
             for (int currentColumn = 1; currentColumn <= classroomDetail.Column; currentColumn++)
             {
-                var totalColumn = classroomDetail.Column;
-
                 bool isOdd = currentColumn % 2 == 1;
                 bool isValid = isOdd && ((totalColumn - currentColumn) > 1);
                 bool isLastColumn = (currentColumn == totalColumn) && (totalColumn != 2);
@@ -55,12 +62,14 @@ namespace exam_hall_seating.Repository
                 if (currentColumn == 1 || isLastColumn || isValid)
                 {
                     classroomDetail.ValidColumns += "1";
+                    totalCapacity += classroomDetail.Row;
                 }
                 else
                 {
                     classroomDetail.ValidColumns += "0";
                 }
             }
+            return totalCapacity;
         }
 
         public bool Delete(ClassroomDetail classroomDetail)
@@ -90,5 +99,6 @@ namespace exam_hall_seating.Repository
             _context.Update(classroomDetail);
             return Save();
         }
+
     }
 }

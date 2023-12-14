@@ -3,6 +3,8 @@ using exam_hall_seating.Data;
 using exam_hall_seating.Interfaces;
 using exam_hall_seating.Models;
 using exam_hall_seating.Repository;
+using exam_hall_seating.Services;
+using exam_hall_seating.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,7 @@ builder.Services.AddScoped<IExamRepository, ExamRepository>();
 builder.Services.AddScoped<IInstructorLectureRepository, InstructorLectureRepository>();
 builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 builder.Services.AddScoped<IClassroomDetailRepository, ClassroomDetailsRepository>();
+builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
