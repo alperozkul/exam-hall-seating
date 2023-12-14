@@ -1,9 +1,8 @@
 ﻿@using exam_hall_seating.ViewModels.ExamVM;
 @model ArrangementViewModel
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+<script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
 
 <div class="row">
     <div class="col-md-6">
@@ -12,6 +11,7 @@
         <p><strong>Sınav Tarihi:</strong> @Model.Date.ToString("dd/MM/yyyy")</p>
         <p><strong>Başlangıç Saati:</strong> @($"{(int)(Model.StartTime.TotalHours):D2}:{Model.StartTime.Minutes:D2}")</p>
         <p><strong>Bitiş Saati:</strong> @($"{(int)(Model.EndTime.TotalHours):D2}:{Model.EndTime.Minutes:D2}")</p>
+        <p><strong>Toplam Öğrenci:</strong> @Model.Students.Count</p>
     </div>
 
     <div class="col-md-6">
@@ -37,11 +37,8 @@
 <h2>Sınıf Seçimi</h2>
 
 <form method="post" asp-controller="Exam" asp-action="ClassArrangement">
-    @*<label for="@Model.SelectedClassrooms">Select Options:</label>*@
-    <select asp-for="SelectedClassrooms" asp-items="ViewBag.Classrooms" class="form-control" multiple></select>
-
     <input type="hidden" asp-for="Id" value="@Model.Id" />
-     @for (var j = 0; j < Model.Students.Count; j++)
+    @for (var j = 0; j < Model.Students.Count; j++)
     {
         <input type="hidden" name="Students[@j].Id" value="@Model.Students[j].Id">
         <input type="hidden" name="Students[@j].Number" value="@Model.Students[j].Number">
@@ -49,10 +46,16 @@
         <input type="hidden" name="Students[@j].LastName" value="@Model.Students[j].LastName">
         <input type="hidden" name="Students[@j].Mail" value="@Model.Students[j].Mail">
     }
-
-
-    <button type="submit">Sınıflara yerleştir</button>
+    <div class="row">
+        <div class="col-md-3">
+            <select multiple id="select-classroom" asp-for="SelectedClassrooms" asp-items="ViewBag.Classrooms"></select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary">Sınıflara yerleştir</button>
+        </div>
+    </div>
 </form>
+<hr />
 
 <div>
     @foreach (var className in Model.Students.Select(s => s.ClassName).Distinct())
@@ -77,7 +80,7 @@
 
     <div id="@uniqueId" style="display:none;">
         
-        <h3>@(className ?? "Yerleştirilmeyen") Öğrenci Listesi</h3>
+        <h3>@(className ?? "Yerleştirilemeyen") Öğrenci Listesi</h3>
         <table class="table">
             <thead>
                 <tr>
@@ -118,3 +121,6 @@
     }
 </script>
 
+<script>
+    new MultiSelectTag('select-classroom')  // id
+</script>

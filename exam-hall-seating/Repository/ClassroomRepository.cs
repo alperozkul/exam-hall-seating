@@ -26,9 +26,9 @@ namespace exam_hall_seating.Repository
             return Save();
         }
 
-        public async Task<List<Classroom>> GetAllAsync()
+        public  List<Classroom> GetAll()
         {
-            return await _context.Classrooms.OrderBy(i => i.Floor).ToListAsync();
+            return  _context.Classrooms.OrderBy(i => i.Floor).ToList();
         }
 
         public async Task<Classroom> GetByIdAsync(int id)

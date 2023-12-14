@@ -24,9 +24,9 @@ namespace exam_hall_seating.Controllers
             _classroomDetailRepository = classroomDetailRepository;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            IEnumerable<Classroom> images = await _classroomRepository.GetAllAsync();
+            IEnumerable<Classroom> images =  _classroomRepository.GetAll();
             classroomViewModel = new CreateClassroomViewModel();
             return View(images);
         }

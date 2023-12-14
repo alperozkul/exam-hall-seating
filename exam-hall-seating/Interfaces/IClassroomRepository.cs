@@ -4,7 +4,7 @@ namespace exam_hall_seating.Interfaces
 {
     public interface IClassroomRepository
     {
-        Task<List<Classroom>> GetAllAsync();
+        List<Classroom> GetAll();
         Task<Classroom> GetByIdAsync(int id);
         Classroom GetByName(string name);
         bool Add(Classroom classroom);
