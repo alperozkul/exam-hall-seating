@@ -42,7 +42,7 @@ namespace exam_hall_seating.Services
                             Number = Convert.ToInt32(reader.GetValue(0)),
                             FirstName = reader.GetValue(1)?.ToString(),
                             LastName = reader.GetValue(2)?.ToString(),
-                            Mail = reader.GetValue(3)?.ToString()
+                            Mail = reader.GetValue(3)?.ToString(),
                         };
 
                         excelData.Add(rowData);

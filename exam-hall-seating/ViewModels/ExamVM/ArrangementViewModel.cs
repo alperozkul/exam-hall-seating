@@ -15,7 +15,8 @@ namespace exam_hall_seating.ViewModels.ExamVM
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public List<EnrolledStudentViewModel> Students { get; set; }
+        public List<int> SelectedClassrooms { get; set; }
+        public List<EnrolledStudentViewModel>? Students { get; set; }
 
         //public List<ClassroomDetail>? ClassroomDetails { get; set; }
 

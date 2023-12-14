@@ -14,8 +14,6 @@ namespace exam_hall_seating.Models
         public int Row { get; set; }
         public int Column { get; set; }
         public string? ValidColumns { get; set; }
-        public int Capacity => Row * Column;
-
-        public ICollection<ExamSeat>? ExamSeats { get; set; }
+        public int Capacity => Row * Column;   
     }
 }

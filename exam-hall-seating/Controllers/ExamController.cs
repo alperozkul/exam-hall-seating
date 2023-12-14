@@ -16,18 +16,22 @@ namespace exam_hall_seating.Controllers
     public class ExamController : Controller
     {
         private readonly IExamRepository _examRepository;
-        private readonly ILectureRepository _lectureRepository;
+        private readonly ILectureRepository _lectureRepository; //
         private readonly IEnrollmentRepository _enrollmentRepository;
+        private readonly IClassroomRepository _classroomRepository;
+        private readonly IClassroomDetailRepository _classroomDetailRepository;
         private readonly IMapper _mapper;
         private readonly IExcelService _excelService;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IClassroomDetailRepository classroomDetailRepository)
         {
             _examRepository = examRepository;
-            _lectureRepository = lectureRepository;
+            _lectureRepository = lectureRepository;//
             _mapper = mapper;
             _enrollmentRepository = enrollmentRepository;
             _excelService = excelService;
+            _classroomRepository = classroomRepository;
+            _classroomDetailRepository = classroomDetailRepository;
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -91,9 +95,7 @@ namespace exam_hall_seating.Controllers
         
         public async Task<IActionResult> Arrangement(int id)
         {
-            
             var exam = await _examRepository.GetByIdAsync(id);
-            var lecture = await _lectureRepository.GetByIdAsync(exam.LectureId);
             var enrolledStudents = await _enrollmentRepository.GetAllStudentsByLectureId(exam.LectureId);
 
             if (exam == null) return View("Error");
@@ -104,9 +106,13 @@ namespace exam_hall_seating.Controllers
             arrangementVM.Date = exam.Date;
             arrangementVM.StartTime = exam.StartTime;
             arrangementVM.EndTime = exam.EndTime;
-            arrangementVM.LectureName = lecture.Name;
-            arrangementVM.LectureId = lecture.Id;
+            arrangementVM.LectureName = exam.Lecture.Name;
+            arrangementVM.LectureId = exam.Lecture.Id;
+
             arrangementVM.Students = enrolledStudents;
+
+
+            ViewBag.Classrooms = new SelectList(await _classroomRepository.GetAllAsync(), "Id", "ClassName");
 
             return View(arrangementVM);
         }
@@ -114,17 +120,57 @@ namespace exam_hall_seating.Controllers
         [HttpPost]
         public async Task<IActionResult> ArrangementWithExcel(ArrangementViewModel arrangementVM, IFormFile file)
         {
-            if (file == null)
-            {
-                ViewData["FileError"] = "Lütfen Excel dosyası seçiniz.";
-                return View("Arrangement", arrangementVM);
-            }
-            arrangementVM.Students.Clear();
+            ViewBag.Classrooms = new SelectList(await _classroomRepository.GetAllAsync(), "Id", "ClassName");
+
+            var exam = await _examRepository.GetByIdAsync(arrangementVM.Id);
+            var lecture = await _lectureRepository.GetByIdAsync(exam.LectureId);
+            arrangementVM.Date = exam.Date;
+            arrangementVM.StartTime = exam.StartTime;
+            arrangementVM.EndTime = exam.EndTime;
+            arrangementVM.LectureName = exam.Lecture.Name;
+            arrangementVM.LectureId = exam.Lecture.Id;
 
             List<EnrolledStudentViewModel> enrolledStudents = _excelService.ReadExcelFileAsync(file);
             arrangementVM.Students = enrolledStudents;
             return View("Arrangement", arrangementVM);
             
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ClassArrangement(ArrangementViewModel arrangementVM)
+        {
+            ViewBag.Classrooms = new SelectList(await _classroomRepository.GetAllAsync(), "Id", "ClassName");
+            var exam = await _examRepository.GetByIdAsync(arrangementVM.Id);
+            var lecture = await _lectureRepository.GetByIdAsync(exam.LectureId);
+            arrangementVM.Date = exam.Date;
+            arrangementVM.StartTime = exam.StartTime;
+            arrangementVM.EndTime = exam.EndTime;
+            arrangementVM.LectureName = exam.Lecture.Name;
+            arrangementVM.LectureId = exam.Lecture.Id;
+
+
+            int totalStudent = arrangementVM.Students.Count;
+            List<Classroom> classroomList = new List<Classroom>();
+
+            foreach(var id in arrangementVM.SelectedClassrooms)
+            {
+                Classroom classroom = await _classroomRepository.GetByIdAsync(id);
+                classroomList.Add(classroom);
+            }
+
+            int currentStudent = 0;
+            foreach (var classroom in classroomList)
+            {
+                int totalCapacity = (int)classroom.ExamCapacity;
+                for(int i = 0; i < totalCapacity && currentStudent < totalStudent; i++)
+                {
+                    arrangementVM.Students[currentStudent].ClassName = classroom.ClassName;
+                    currentStudent++;
+                }
+            }
+
+            return View("Arrangement", arrangementVM);
         }
 
     }

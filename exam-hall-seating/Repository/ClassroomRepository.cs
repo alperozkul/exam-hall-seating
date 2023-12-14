@@ -26,7 +26,7 @@ namespace exam_hall_seating.Repository
             return Save();
         }
 
-        public async Task<IEnumerable<Classroom>> GetAllAsync()
+        public async Task<List<Classroom>> GetAllAsync()
         {
             return await _context.Classrooms.OrderBy(i => i.Floor).ToListAsync();
         }
@@ -36,9 +36,9 @@ namespace exam_hall_seating.Repository
             return await _context.Classrooms.FirstOrDefaultAsync(classroom => classroom.Id == id);
         }
 
-        public int GetIdByName(string name)
+        public Classroom GetByName(string name)
         {
-            return _context.Classrooms.FirstOrDefault(c => c.ClassName == name).Id;
+            return _context.Classrooms.FirstOrDefault(c => c.ClassName == name);
         }
 
         public bool Save()

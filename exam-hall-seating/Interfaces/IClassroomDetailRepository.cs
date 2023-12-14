@@ -7,8 +7,7 @@ namespace exam_hall_seating.Interfaces
         Task<IEnumerable<ClassroomDetail>> GetAllAsync();
         Task<ClassroomDetail> GetByIdAsync(int id);
         List<ClassroomDetail> GetAllDetailById(int id);
-        Task CreateClassroomBlocksAsync(List<ClassroomDetail> classroomDetail);
-        Task<ClassroomDetail> AddBlock(ClassroomDetail block);
+        Task<int> CreateClassroomBlocksAsync(List<ClassroomDetail> classroomDetail);
         bool Add(ClassroomDetail classroomDetail);
         bool Update(ClassroomDetail classroomDetail);
         bool Delete(ClassroomDetail classroomDetail);

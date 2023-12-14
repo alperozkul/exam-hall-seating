@@ -37,7 +37,7 @@ namespace exam_hall_seating.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreateClassroomViewModel model, IFormFile? image)
+        public async Task<IActionResult> Create(CreateClassroomViewModel model, IFormFile? image)
         {
             if (ModelState.IsValid)
             {
@@ -50,15 +50,15 @@ namespace exam_hall_seating.Controllers
                     }
                 }
                 _classroomRepository.Add(model.ClassroomData);
-                int classroomId = _classroomRepository.GetIdByName(model.ClassroomData.ClassName);
+                Classroom classroom = _classroomRepository.GetByName(model.ClassroomData.ClassName);
 
                 foreach(var block in classroomViewModel.ClassroomDetail)
                 {
-                    block.ClassroomId = classroomId;
+                    block.ClassroomId = classroom.Id;
                 }
-                _classroomDetailRepository.CreateClassroomBlocksAsync(classroomViewModel.ClassroomDetail);
-                
-                
+                int totalCapacity = await _classroomDetailRepository.CreateClassroomBlocksAsync(classroomViewModel.ClassroomDetail);
+                classroom.ExamCapacity = totalCapacity;
+                _classroomRepository.Update(classroom);
                 return RedirectToAction("Index");
             }
             return RedirectToAction("Index");

@@ -36,7 +36,7 @@ namespace exam_hall_seating.Repository
 
         public async Task<Exam> GetByIdAsync(int id)
         {
-            return await _context.Exams.FirstOrDefaultAsync(i => i.Id == id);
+            return await _context.Exams.Include(i => i.Lecture).FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public bool Save()
