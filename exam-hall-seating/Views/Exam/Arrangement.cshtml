@@ -81,6 +81,30 @@
     <div id="@uniqueId" style="display:none;">
         
         <h3>@(className ?? "Yerleştirilemeyen") Öğrenci Listesi</h3>
+        <form asp-action="DownloadPdf" asp-controller="Exam" method="post">
+            <input type="hidden" asp-for="Id" value="@Model.Id" />
+            <input type="hidden" asp-for="LectureId" value="@Model.LectureId" />
+            <input type="hidden" asp-for="LectureName" value="@Model.LectureName" />
+            <input type="hidden" asp-for="Date" value="@Model.Date" />
+            <input type="hidden" asp-for="StartTime" value="@Model.StartTime" />
+            <input type="hidden" asp-for="EndTime" value="@Model.EndTime" />
+            <input type="hidden" asp-for="SelectedClassrooms" value="@Model.SelectedClassrooms" />
+            @{
+                int x = 0;
+            }
+            @foreach(var student in Model.Students.Where(s => s.ClassName == className).ToList())
+            {
+                <input type="hidden" name="Students[@x].Id" value="@student.Id">
+                <input type="hidden" name="Students[@x].Number" value="@student.Number">
+                <input type="hidden" name="Students[@x].FirstName" value="@student.FirstName">
+                <input type="hidden" name="Students[@x].LastName" value="@student.LastName">
+                <input type="hidden" name="Students[@x].Mail" value="@student.Mail">
+                <input type="hidden" name="Students[@x].ClassName" value="@student.ClassName">
+                x++;
+            }
+            <button type="submit" class="btn btn-primary">PDF İndir</button>
+        </form>
+        
         <table class="table">
             <thead>
                 <tr>
