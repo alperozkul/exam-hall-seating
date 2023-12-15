@@ -9,6 +9,7 @@ using exam_hall_seating.ViewModels.ExamVM;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using X.PagedList;
 
 namespace exam_hall_seating.Controllers
@@ -22,10 +23,11 @@ namespace exam_hall_seating.Controllers
 
         private readonly IMapper _mapper;
         private readonly IExcelService _excelService;
+        private readonly IPdfService _pdfService;
 
         private static List<SelectListItem> _classroomSelectList;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IPdfService pdfService)
         {
             _examRepository = examRepository;
             _lectureRepository = lectureRepository;//
@@ -33,12 +35,13 @@ namespace exam_hall_seating.Controllers
             _enrollmentRepository = enrollmentRepository;
             _excelService = excelService;
             _classroomRepository = classroomRepository;
+            _pdfService = pdfService;
 
             if (_classroomSelectList == null)
             {
                 InitializeClassroomSelectList();
             }
-
+            
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -178,6 +181,13 @@ namespace exam_hall_seating.Controllers
             }            
 
             return View("Arrangement", arrangementVM);
+        }
+
+        [HttpPost]
+        public IActionResult DownloadPdf(ArrangementViewModel arrangementVM)
+        {
+            var pdf = _pdfService.GeneratePdfAsync(arrangementVM);
+            return File(pdf, "application/pdf", arrangementVM.Date.ToString("dd/MM/yyyy")+"_"+arrangementVM.LectureName+"_"+arrangementVM.Students[0].ClassName+".pdf");
         }
 
         private void InitializeClassroomSelectList()
