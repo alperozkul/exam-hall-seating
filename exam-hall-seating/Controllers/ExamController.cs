@@ -17,17 +17,18 @@ namespace exam_hall_seating.Controllers
     public class ExamController : Controller
     {
         private readonly IExamRepository _examRepository;
-        private readonly ILectureRepository _lectureRepository; //
+        private readonly ILectureRepository _lectureRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IClassroomRepository _classroomRepository;
 
         private readonly IMapper _mapper;
         private readonly IExcelService _excelService;
         private readonly IPdfService _pdfService;
+        private readonly IMailService _mailService;
 
         private static List<SelectListItem> _classroomSelectList;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IPdfService pdfService)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IPdfService pdfService, IMailService mailService)
         {
             _examRepository = examRepository;
             _lectureRepository = lectureRepository;//
@@ -36,12 +37,12 @@ namespace exam_hall_seating.Controllers
             _excelService = excelService;
             _classroomRepository = classroomRepository;
             _pdfService = pdfService;
+            _mailService = mailService;
 
             if (_classroomSelectList == null)
             {
                 InitializeClassroomSelectList();
             }
-            
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -136,7 +137,14 @@ namespace exam_hall_seating.Controllers
             arrangementVM.LectureId = exam.Lecture.Id;
 
             List<EnrolledStudentViewModel> enrolledStudents = _excelService.ReadExcelFileAsync(file);
-            arrangementVM.Students = enrolledStudents;
+
+            List<EnrolledStudentViewModel> sortedStudents = enrolledStudents
+            .OrderBy(s => s.Number.ToString().Substring(4, 4))   // Başarı sırasına göre sırala
+            .ThenBy(s => s.Number.ToString().Substring(0, 2)) // Giriş yılına göre sırala
+            .ToList();
+
+
+            arrangementVM.Students = sortedStudents;
             return View("Arrangement", arrangementVM);
             
         }
@@ -186,8 +194,25 @@ namespace exam_hall_seating.Controllers
         [HttpPost]
         public IActionResult DownloadPdf(ArrangementViewModel arrangementVM)
         {
-            var pdf = _pdfService.GeneratePdfAsync(arrangementVM);
+            byte[] pdf = _pdfService.GeneratePdfAsync(arrangementVM);
             return File(pdf, "application/pdf", arrangementVM.Date.ToString("dd/MM/yyyy")+"_"+arrangementVM.LectureName+"_"+arrangementVM.Students[0].ClassName+".pdf");
+        }
+
+        [HttpPost]
+        public IActionResult SendMail(ArrangementViewModel arrangementVM)
+        {
+            try
+            {
+                byte[] pdf = _pdfService.GeneratePdfAsync(arrangementVM);
+                _mailService.SendMail(arrangementVM, pdf);
+                return Json(new { success = true, message = "Mail başarıyla gönderildi." });
+
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Mail gönderme işleminde hata oluştu." });
+            }
+
         }
 
         private void InitializeClassroomSelectList()

@@ -3,6 +3,8 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
 <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 
 <div class="row">
     <div class="col-md-6">
@@ -74,37 +76,77 @@
     }
 </div>
 
+<br />
+
 @foreach (var className in Model.Students.Select(s => s.ClassName).Distinct())
 {
     var uniqueId = string.IsNullOrEmpty(className) ? "null" : className; // Null için özel kimlik
 
     <div id="@uniqueId" style="display:none;">
-        
-        <h3>@(className ?? "Yerleştirilemeyen") Öğrenci Listesi</h3>
-        <form asp-action="DownloadPdf" asp-controller="Exam" method="post">
-            <input type="hidden" asp-for="Id" value="@Model.Id" />
-            <input type="hidden" asp-for="LectureId" value="@Model.LectureId" />
-            <input type="hidden" asp-for="LectureName" value="@Model.LectureName" />
-            <input type="hidden" asp-for="Date" value="@Model.Date" />
-            <input type="hidden" asp-for="StartTime" value="@Model.StartTime" />
-            <input type="hidden" asp-for="EndTime" value="@Model.EndTime" />
-            <input type="hidden" asp-for="SelectedClassrooms" value="@Model.SelectedClassrooms" />
-            @{
-                int x = 0;
-            }
-            @foreach(var student in Model.Students.Where(s => s.ClassName == className).ToList())
+        <div class="row">
+            <div class="col-md-auto">
+                <h3>@(className ?? "Yerleştirilemeyen") Öğrenci Listesi</h3>
+            </div>      
+            @if(className != null)
             {
-                <input type="hidden" name="Students[@x].Id" value="@student.Id">
-                <input type="hidden" name="Students[@x].Number" value="@student.Number">
-                <input type="hidden" name="Students[@x].FirstName" value="@student.FirstName">
-                <input type="hidden" name="Students[@x].LastName" value="@student.LastName">
-                <input type="hidden" name="Students[@x].Mail" value="@student.Mail">
-                <input type="hidden" name="Students[@x].ClassName" value="@student.ClassName">
-                x++;
-            }
-            <button type="submit" class="btn btn-primary">PDF İndir</button>
-        </form>
-        
+                <div class="col-md-auto">
+                    <form asp-action="DownloadPdf" asp-controller="Exam" method="post">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <input type="hidden" asp-for="LectureId" value="@Model.LectureId" />
+                        <input type="hidden" asp-for="LectureName" value="@Model.LectureName" />
+                        <input type="hidden" asp-for="Date" value="@Model.Date" />
+                        <input type="hidden" asp-for="StartTime" value="@Model.StartTime" />
+                        <input type="hidden" asp-for="EndTime" value="@Model.EndTime" />
+                        <input type="hidden" asp-for="SelectedClassrooms" value="@Model.SelectedClassrooms" />
+                        @{
+                            int x = 0;
+                        }
+                        @foreach (var student in Model.Students.Where(s => s.ClassName == className).ToList())
+                        {
+                            <input type="hidden" name="Students[@x].Id" value="@student.Id">
+                            <input type="hidden" name="Students[@x].Number" value="@student.Number">
+                            <input type="hidden" name="Students[@x].FirstName" value="@student.FirstName">
+                            <input type="hidden" name="Students[@x].LastName" value="@student.LastName">
+                            <input type="hidden" name="Students[@x].Mail" value="@student.Mail">
+                            <input type="hidden" name="Students[@x].ClassName" value="@student.ClassName">
+                            x++;
+                        }
+                        <button type="submit" class="btn btn-primary">PDF İndir</button>
+                    </form>
+                </div>
+                <div class="col-md-auto">
+                    <form id="sendMailForm_@uniqueId" asp-action="SendMail" asp-controller="Exam" method="post">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <input type="hidden" asp-for="LectureId" value="@Model.LectureId" />
+                        <input type="hidden" asp-for="LectureName" value="@Model.LectureName" />
+                        <input type="hidden" asp-for="Date" value="@Model.Date" />
+                        <input type="hidden" asp-for="StartTime" value="@Model.StartTime" />
+                        <input type="hidden" asp-for="EndTime" value="@Model.EndTime" />
+                        <input type="hidden" asp-for="SelectedClassrooms" value="@Model.SelectedClassrooms" />
+                        @{
+                            int j = 0;
+                        }
+                        @foreach (var student in Model.Students.Where(s => s.ClassName == className).ToList())
+                        {
+                            <input type="hidden" name="Students[@j].Id" value="@student.Id">
+                            <input type="hidden" name="Students[@j].Number" value="@student.Number">
+                            <input type="hidden" name="Students[@j].FirstName" value="@student.FirstName">
+                            <input type="hidden" name="Students[@j].LastName" value="@student.LastName">
+                            <input type="hidden" name="Students[@j].Mail" value="@student.Mail">
+                            <input type="hidden" name="Students[@j].ClassName" value="@student.ClassName">
+                            j++;
+                        }
+                        <button type="button" class="btn btn-primary" onclick="sendMail('@uniqueId')">Mail Gönder</button>
+                    </form>                    
+                </div>
+                <div class="col-md-auto">
+                    <div id="mailResult_@uniqueId" style="margin-top:10px; font-weight:bold; display:none;"></div>
+                </div>
+            }         
+        </div>
+
+        <hr>
+
         <table class="table">
             <thead>
                 <tr>
@@ -146,5 +188,23 @@
 </script>
 
 <script>
-    new MultiSelectTag('select-classroom')  // id
+    new MultiSelectTag('select-classroom')  
 </script>
+
+<script>
+    function sendMail(uniqueId) {
+        $.ajax({
+            url: $('#sendMailForm_' + uniqueId).attr('action'),
+            type: 'POST',
+            data: $('#sendMailForm_' + uniqueId).serialize(),
+            success: function (result) {
+                if (result && result.success) {                   
+                    $('#mailResult_' + uniqueId).removeClass('text-danger').addClass('text-success').text('Mail başarıyla gönderildi.').show();
+                } else {
+                    $('#mailResult_' + uniqueId).removeClass('text-success').addClass('text-danger').text('Mail gönderme işleminde hata oluştu.').show();
+                }
+            },        
+        });
+    }
+</script>
+

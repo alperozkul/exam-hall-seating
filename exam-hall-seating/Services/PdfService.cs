@@ -62,6 +62,10 @@ namespace exam_hall_seating.Services
                 title.Alignment = Element.ALIGN_CENTER;
                 document.Add(title);
 
+                //Sınav Bilgileri
+                Paragraph exam = new Paragraph(arrangementVM.LectureName + " Sınavı Oturma Düzeni", fontHeader);
+                exam.Alignment = Element.ALIGN_CENTER;
+                document.Add(exam);
 
                 //Sınav tarih, başlangıç ve bitiş saat bilgileri
                 Paragraph examDetails = new Paragraph($"Sınav Tarihi: {arrangementVM.Date.ToShortDateString()}", fontInfo);
@@ -73,11 +77,6 @@ namespace exam_hall_seating.Services
                 Paragraph endTime = new Paragraph($"Bitiş Saati: {arrangementVM.EndTime.ToString(@"hh\:mm")}", fontInfo);
                 endTime.Alignment = Element.ALIGN_CENTER;
                 document.Add(endTime);
-
-                //Sınav Bilgileri
-                Paragraph exam = new Paragraph(arrangementVM.LectureName + " Sınavı Oturma Düzeni", fontHeader);
-                exam.Alignment = Element.ALIGN_CENTER;
-                document.Add(exam);
 
                 //Sınıf Bilgileri
                 Paragraph classroom = new Paragraph(arrangementVM.Students[0].ClassName + " Sınıf Krokisi", fontNormal);
@@ -151,7 +150,7 @@ namespace exam_hall_seating.Services
 
                 //Öğrenci listesinin oluşturulması
                 PdfPTable studentsTable = new PdfPTable(3);
-                studentsTable.WidthPercentage = 100;
+                //studentsTable.WidthPercentage = 100;
                 studentsTable.SpacingBefore = 10f;
 
                 PdfPCell c_seatNumber = new PdfPCell(new Phrase("Sıra Numarası", fontTable));
@@ -163,6 +162,7 @@ namespace exam_hall_seating.Services
                 c_seatNumber.BorderWidthRight = 1f;
                 c_seatNumber.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_seatNumber.VerticalAlignment = Element.ALIGN_CENTER;
+                c_seatNumber.NoWrap = false;
                 studentsTable.AddCell(c_seatNumber);
 
                 PdfPCell c_Number = new PdfPCell(new Phrase("Numara", fontTable));
@@ -174,6 +174,7 @@ namespace exam_hall_seating.Services
                 c_Number.BorderWidthRight = 1f;
                 c_Number.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_Number.VerticalAlignment = Element.ALIGN_CENTER;
+                c_Number.NoWrap = false;
                 studentsTable.AddCell(c_Number);
 
                 PdfPCell c_FullName = new PdfPCell(new Phrase("Ad Soyad", fontTable));
@@ -185,6 +186,7 @@ namespace exam_hall_seating.Services
                 c_FullName.BorderWidthRight = 1f;
                 c_FullName.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_FullName.VerticalAlignment = Element.ALIGN_CENTER;
+                c_FullName.NoWrap = false;
                 studentsTable.AddCell(c_FullName);
 
                 int currentSeat = 1;
@@ -198,6 +200,10 @@ namespace exam_hall_seating.Services
                     Number.HorizontalAlignment = Element.ALIGN_CENTER;
                     PdfPCell FullName = new PdfPCell(new Phrase(studentFullName, fontTable));
                     FullName.HorizontalAlignment = Element.ALIGN_CENTER;
+
+                    seatNumber.NoWrap = false;
+                    Number.NoWrap = false;
+                    FullName.NoWrap = false;
 
                     studentsTable.AddCell(seatNumber);
                     studentsTable.AddCell(Number);
