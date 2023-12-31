@@ -57,6 +57,9 @@ namespace exam_hall_seating.Services
                 Font fontTable = new Font(STF_Helvetica_Turkish, 10, Font.NORMAL);
                 Font fontInfo = new Font(STF_Helvetica_Turkish, 12, Font.NORMAL);
 
+                //BaseColor greenColor = new BaseColor(0, 139, 0);
+                //BaseColor redColor = new BaseColor(198, 0, 0);
+
                 //Başlık
                 Paragraph title = new Paragraph("Ondokuz Mayıs Üniversitesi", fontHeader);
                 title.Alignment = Element.ALIGN_CENTER;
@@ -93,7 +96,7 @@ namespace exam_hall_seating.Services
                 kürsü.Alignment = Element.ALIGN_CENTER;
                 kürsü.SpacingBefore = 20f;
                 document.Add(kürsü);
-                Paragraph p = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(2.0F, 50.0F, BaseColor.BLACK, Element.ALIGN_CENTER, 1)));
+                Paragraph p = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(5.0F, 50.0F, BaseColor.BLACK, Element.ALIGN_CENTER, 1)));
                 document.Add(p);
 
                 //Tablo halinde sınıf krokisinin oluşturulması
@@ -114,14 +117,17 @@ namespace exam_hall_seating.Services
                                 PdfPCell cell = new PdfPCell(new Phrase(currentValidColumns.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                 cell.MinimumHeight = 1f;
+                                cell.BackgroundColor = BaseColor.GREEN;
                                 currentValidColumns++;
                                 classroomSketch.AddCell(cell);
 
                             }
                             else
                             {
-                                PdfPCell cell1 = new PdfPCell(new Phrase());
+                                PdfPCell cell1 = new PdfPCell(new Phrase("X", new Font(Font.FontFamily.HELVETICA, 14)));
                                 cell1.MinimumHeight = 1f;
+                                cell1.HorizontalAlignment = Element.ALIGN_CENTER;
+                                cell1.BackgroundColor = BaseColor.RED;
                                 classroomSketch.AddCell(cell1);
                             }
                             if (j == blok.Column - 1 && blok != classroomDetails[classroomDetails.Count - 1])
@@ -155,11 +161,6 @@ namespace exam_hall_seating.Services
 
                 PdfPCell c_seatNumber = new PdfPCell(new Phrase("Sıra Numarası", fontTable));
                 c_seatNumber.BackgroundColor = BaseColor.LIGHT_GRAY;
-                c_seatNumber.Border = Rectangle.BOTTOM_BORDER | Rectangle.TOP_BORDER | Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
-                c_seatNumber.BorderWidthBottom = 1f;
-                c_seatNumber.BorderWidthTop = 1f;
-                c_seatNumber.BorderWidthLeft = 1f;
-                c_seatNumber.BorderWidthRight = 1f;
                 c_seatNumber.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_seatNumber.VerticalAlignment = Element.ALIGN_CENTER;
                 c_seatNumber.NoWrap = false;
@@ -167,11 +168,6 @@ namespace exam_hall_seating.Services
 
                 PdfPCell c_Number = new PdfPCell(new Phrase("Numara", fontTable));
                 c_Number.BackgroundColor = BaseColor.LIGHT_GRAY;
-                c_Number.Border = Rectangle.BOTTOM_BORDER | Rectangle.TOP_BORDER | Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
-                c_Number.BorderWidthBottom = 1f;
-                c_Number.BorderWidthTop = 1f;
-                c_Number.BorderWidthLeft = 1f;
-                c_Number.BorderWidthRight = 1f;
                 c_Number.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_Number.VerticalAlignment = Element.ALIGN_CENTER;
                 c_Number.NoWrap = false;
@@ -179,11 +175,6 @@ namespace exam_hall_seating.Services
 
                 PdfPCell c_FullName = new PdfPCell(new Phrase("Ad Soyad", fontTable));
                 c_FullName.BackgroundColor = BaseColor.LIGHT_GRAY;
-                c_FullName.Border = Rectangle.BOTTOM_BORDER | Rectangle.TOP_BORDER | Rectangle.LEFT_BORDER | Rectangle.RIGHT_BORDER;
-                c_FullName.BorderWidthBottom = 1f;
-                c_FullName.BorderWidthTop = 1f;
-                c_FullName.BorderWidthLeft = 1f;
-                c_FullName.BorderWidthRight = 1f;
                 c_FullName.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_FullName.VerticalAlignment = Element.ALIGN_CENTER;
                 c_FullName.NoWrap = false;
