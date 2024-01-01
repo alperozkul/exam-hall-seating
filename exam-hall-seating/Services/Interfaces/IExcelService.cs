@@ -4,6 +4,6 @@ namespace exam_hall_seating.Services.Interfaces
 {
     public interface IExcelService
     {
-        List<EnrolledStudentViewModel> ReadExcelFileAsync(IFormFile file);
+        Task<List<EnrolledStudentViewModel>> ReadExcelFileAsync(IFormFile file);
     }
 }

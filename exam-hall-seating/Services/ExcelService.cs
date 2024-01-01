@@ -6,7 +6,7 @@ namespace exam_hall_seating.Services
 {
     public class ExcelService : IExcelService
     {
-        public List<EnrolledStudentViewModel> ReadExcelFileAsync(IFormFile file)
+        public async Task<List<EnrolledStudentViewModel>> ReadExcelFileAsync(IFormFile file)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
@@ -14,7 +14,7 @@ namespace exam_hall_seating.Services
 
             using (var stream = File.Create(filePath))
             {
-                file.CopyToAsync(stream);
+                await file.CopyToAsync(stream);
             }
 
             using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))

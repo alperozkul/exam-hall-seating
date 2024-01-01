@@ -136,15 +136,18 @@ namespace exam_hall_seating.Controllers
             arrangementVM.LectureName = exam.Lecture.Name;
             arrangementVM.LectureId = exam.Lecture.Id;
 
-            List<EnrolledStudentViewModel> enrolledStudents = _excelService.ReadExcelFileAsync(file);
+            List<EnrolledStudentViewModel> enrolledStudents = await _excelService.ReadExcelFileAsync(file);
 
-            List<EnrolledStudentViewModel> sortedStudents = enrolledStudents
-            .OrderBy(s => s.Number.ToString().Substring(4, 4))   // Başarı sırasına göre sırala
-            .ThenBy(s => s.Number.ToString().Substring(0, 2)) // Giriş yılına göre sırala
-            .ToList();
+            //Random random = new Random();
+            //enrolledStudents = enrolledStudents.OrderBy(student => random.Next()).ToList();
+
+            //List<EnrolledStudentViewModel> sortedStudents = enrolledStudents
+            //.OrderBy(s => s.Number.ToString().Substring(4, 4))   // Başarı sırasına göre sırala
+            //.ThenBy(s => s.Number.ToString().Substring(0, 2)) // Giriş yılına göre sırala
+            //.ToList();
 
 
-            arrangementVM.Students = sortedStudents;
+            arrangementVM.Students = enrolledStudents;
             return View("Arrangement", arrangementVM);
             
         }
@@ -195,7 +198,10 @@ namespace exam_hall_seating.Controllers
         public IActionResult DownloadPdf(ArrangementViewModel arrangementVM)
         {
             byte[] pdf = _pdfService.GeneratePdfAsync(arrangementVM);
-            return File(pdf, "application/pdf", arrangementVM.Date.ToString("dd/MM/yyyy")+"_"+arrangementVM.LectureName+"_"+arrangementVM.Students[0].ClassName+".pdf");
+            return File(pdf, "application/pdf", 
+                arrangementVM.Date.ToString("dd/MM/yyyy")+"_"+
+                arrangementVM.LectureName+"_"+
+                arrangementVM.Students[0].ClassName+".pdf");
         }
 
         [HttpPost]

@@ -20,7 +20,11 @@ namespace exam_hall_seating.Services
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress("sinavoturmaduzeni@gmail.com");
                 mailMessage.Subject = arrangementVM.LectureName + " Sınavı Oturma Düzeni";
-                mailMessage.Body = arrangementVM.Date.ToShortDateString() + " tarihli " + arrangementVM.LectureName + " dersinin oturma düzeni ektedir. Lütfen kürsü ve sınıf krokisini dikkate alarak geçerli yerinize oturunuz.";
+                mailMessage.Body = 
+                    arrangementVM.Date.ToShortDateString() + 
+                    " tarihli " + 
+                    arrangementVM.LectureName + 
+                    " dersinin oturma düzeni ektedir. Lütfen kürsü ve sınıf krokisini dikkate alarak geçerli yerinize oturunuz.";
 
                 //foreach(var  student in arrangementVM.Students)
                 //{
@@ -33,7 +37,11 @@ namespace exam_hall_seating.Services
 
                 // Ek dosya eklemek için
                 MemoryStream stream = new MemoryStream(pdf);
-                Attachment attachment = new Attachment(stream, arrangementVM.Date.ToString("dd/MM/yyyy") + "_" + arrangementVM.LectureName + "_" + arrangementVM.Students[0].ClassName + ".pdf");
+                Attachment attachment = new Attachment(stream,
+                    arrangementVM.Date.ToString("dd/MM/yyyy") + "_" +
+                    arrangementVM.LectureName + "_" +
+                    arrangementVM.Students[0].ClassName +
+                    ".pdf");
                 mailMessage.Attachments.Add(attachment);
 
                 smtpClient.Send(mailMessage);

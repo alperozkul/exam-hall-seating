@@ -51,14 +51,20 @@ namespace exam_hall_seating.Services
                 document.Add(image);
 
                 //Fontlar
-                BaseFont STF_Helvetica_Turkish = BaseFont.CreateFont("Helvetica", "CP1254", BaseFont.NOT_EMBEDDED);
-                Font fontHeader = new Font(STF_Helvetica_Turkish, 26, Font.NORMAL);
-                Font fontNormal = new Font(STF_Helvetica_Turkish, 16, Font.NORMAL);
-                Font fontTable = new Font(STF_Helvetica_Turkish, 10, Font.NORMAL);
-                Font fontInfo = new Font(STF_Helvetica_Turkish, 12, Font.NORMAL);
+                string fontPath = Path.Combine("wwwroot", "arial.ttf");
+                BaseFont arial = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+                Font fontHeader = new Font(arial, 26, Font.NORMAL);
+                Font fontNormal = new Font(arial, 16, Font.NORMAL); 
+                Font fontRedBold = new Font(arial, 16, Font.BOLD, BaseColor.RED);
+                Font fontBold = new Font(arial, 12, Font.BOLD);
+                Font fontInfo = new Font(arial, 12, Font.NORMAL);
 
-                //BaseColor greenColor = new BaseColor(0, 139, 0);
-                //BaseColor redColor = new BaseColor(198, 0, 0);
+                Font fontTableHeader = new Font(arial, 10, Font.BOLD);
+                Font fontTable = new Font(arial, 10, Font.NORMAL);
+
+                BaseColor greenColor = new BaseColor(92, 184, 92);
+                BaseColor redColor = new BaseColor(217, 83, 79);
+                BaseColor tableHeaderColor = new BaseColor(91, 192, 222);
 
                 //Başlık
                 Paragraph title = new Paragraph("Ondokuz Mayıs Üniversitesi", fontHeader);
@@ -71,20 +77,27 @@ namespace exam_hall_seating.Services
                 document.Add(exam);
 
                 //Sınav tarih, başlangıç ve bitiş saat bilgileri
-                Paragraph examDetails = new Paragraph($"Sınav Tarihi: {arrangementVM.Date.ToShortDateString()}", fontInfo);
+                Chunk examDateChunk = new Chunk("Sınav Tarihi: ", fontBold);
+                Chunk startTimeChunk = new Chunk("Başlangıç Saati: ", fontBold);
+                Chunk endTimeChunk = new Chunk("Bitiş Saati: ", fontBold);
+                Paragraph examDetails = new Paragraph();
+                examDetails.Add(examDateChunk);
+                examDetails.Add(new Chunk(arrangementVM.Date.ToShortDateString(), fontInfo));
+                examDetails.Add(" - ");
+                examDetails.Add(startTimeChunk);
+                examDetails.Add(new Chunk(arrangementVM.StartTime.ToString(@"hh\:mm"), fontInfo));
+                examDetails.Add(" - ");
+                examDetails.Add(endTimeChunk);
+                examDetails.Add(new Chunk(arrangementVM.EndTime.ToString(@"hh\:mm"), fontInfo));
+
                 examDetails.Alignment = Element.ALIGN_CENTER;
+                examDetails.SpacingBefore = 10f;
                 document.Add(examDetails);
-                Paragraph startTime = new Paragraph($"Başlangıç Saati: {arrangementVM.StartTime.ToString(@"hh\:mm")}", fontInfo);
-                startTime.Alignment = Element.ALIGN_CENTER;
-                document.Add(startTime);
-                Paragraph endTime = new Paragraph($"Bitiş Saati: {arrangementVM.EndTime.ToString(@"hh\:mm")}", fontInfo);
-                endTime.Alignment = Element.ALIGN_CENTER;
-                document.Add(endTime);
 
                 //Sınıf Bilgileri
                 Paragraph classroom = new Paragraph(arrangementVM.Students[0].ClassName + " Sınıf Krokisi", fontNormal);
                 classroom.Alignment = Element.ALIGN_CENTER;
-                classroom.SpacingBefore = 30f;
+                classroom.SpacingBefore = 20f;
                 document.Add(classroom);
 
                 //Çizgi
@@ -117,7 +130,7 @@ namespace exam_hall_seating.Services
                                 PdfPCell cell = new PdfPCell(new Phrase(currentValidColumns.ToString(), new Font(Font.FontFamily.HELVETICA, 10)));
                                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
                                 cell.MinimumHeight = 1f;
-                                cell.BackgroundColor = BaseColor.GREEN;
+                                cell.BackgroundColor = greenColor;
                                 currentValidColumns++;
                                 classroomSketch.AddCell(cell);
 
@@ -127,7 +140,7 @@ namespace exam_hall_seating.Services
                                 PdfPCell cell1 = new PdfPCell(new Phrase("X", new Font(Font.FontFamily.HELVETICA, 14)));
                                 cell1.MinimumHeight = 1f;
                                 cell1.HorizontalAlignment = Element.ALIGN_CENTER;
-                                cell1.BackgroundColor = BaseColor.RED;
+                                cell1.BackgroundColor = redColor;
                                 classroomSketch.AddCell(cell1);
                             }
                             if (j == blok.Column - 1 && blok != classroomDetails[classroomDetails.Count - 1])
@@ -150,7 +163,7 @@ namespace exam_hall_seating.Services
                 document.Add(line);
 
                 //Tablo başlığı
-                Paragraph studentList = new Paragraph("Öğrenci Listesi", new Font(STF_Helvetica_Turkish, 18, Font.NORMAL));
+                Paragraph studentList = new Paragraph("Öğrenci Listesi", new Font(arial, 18, Font.NORMAL));
                 studentList.Alignment = Element.ALIGN_CENTER;
                 document.Add(studentList);
 
@@ -159,22 +172,22 @@ namespace exam_hall_seating.Services
                 //studentsTable.WidthPercentage = 100;
                 studentsTable.SpacingBefore = 10f;
 
-                PdfPCell c_seatNumber = new PdfPCell(new Phrase("Sıra Numarası", fontTable));
-                c_seatNumber.BackgroundColor = BaseColor.LIGHT_GRAY;
+                PdfPCell c_seatNumber = new PdfPCell(new Phrase("Sıra Numarası", fontTableHeader));
+                c_seatNumber.BackgroundColor = tableHeaderColor;
                 c_seatNumber.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_seatNumber.VerticalAlignment = Element.ALIGN_CENTER;
                 c_seatNumber.NoWrap = false;
                 studentsTable.AddCell(c_seatNumber);
 
-                PdfPCell c_Number = new PdfPCell(new Phrase("Numara", fontTable));
-                c_Number.BackgroundColor = BaseColor.LIGHT_GRAY;
+                PdfPCell c_Number = new PdfPCell(new Phrase("Numara", fontTableHeader));
+                c_Number.BackgroundColor = tableHeaderColor;
                 c_Number.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_Number.VerticalAlignment = Element.ALIGN_CENTER;
                 c_Number.NoWrap = false;
                 studentsTable.AddCell(c_Number);
 
-                PdfPCell c_FullName = new PdfPCell(new Phrase("Ad Soyad", fontTable));
-                c_FullName.BackgroundColor = BaseColor.LIGHT_GRAY;
+                PdfPCell c_FullName = new PdfPCell(new Phrase("Ad Soyad", fontTableHeader));
+                c_FullName.BackgroundColor = tableHeaderColor;
                 c_FullName.HorizontalAlignment = Element.ALIGN_CENTER;
                 c_FullName.VerticalAlignment = Element.ALIGN_CENTER;
                 c_FullName.NoWrap = false;
