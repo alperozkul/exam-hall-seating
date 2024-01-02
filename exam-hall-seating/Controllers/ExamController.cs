@@ -25,10 +25,11 @@ namespace exam_hall_seating.Controllers
         private readonly IExcelService _excelService;
         private readonly IPdfService _pdfService;
         private readonly IMailService _mailService;
+        private readonly IAlgorithmService _algorithmService;
 
         private static List<SelectListItem> _classroomSelectList;
 
-        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IPdfService pdfService, IMailService mailService)
+        public ExamController(IExamRepository examRepository, ILectureRepository lectureRepository, IMapper mapper, IEnrollmentRepository enrollmentRepository, IExcelService excelService, IClassroomRepository classroomRepository, IPdfService pdfService, IMailService mailService, IAlgorithmService algorithmService)
         {
             _examRepository = examRepository;
             _lectureRepository = lectureRepository;//
@@ -38,11 +39,13 @@ namespace exam_hall_seating.Controllers
             _classroomRepository = classroomRepository;
             _pdfService = pdfService;
             _mailService = mailService;
+            _algorithmService = algorithmService;
 
             if (_classroomSelectList == null)
             {
                 InitializeClassroomSelectList();
             }
+            
         }
 
         public async Task<IActionResult> Index(int page = 1)
@@ -110,17 +113,25 @@ namespace exam_hall_seating.Controllers
             var enrolledStudents = await _enrollmentRepository.GetAllStudentsByLectureId(exam.LectureId);
 
             if (exam == null) return View("Error");
-
-            ArrangementViewModel arrangementVM = new ArrangementViewModel();
-            arrangementVM.Id = id;
-            arrangementVM.Date = exam.Date;
-            arrangementVM.StartTime = exam.StartTime;
-            arrangementVM.EndTime = exam.EndTime;
-            arrangementVM.LectureName = exam.Lecture.Name;
-            arrangementVM.LectureId = exam.Lecture.Id;
-            arrangementVM.Students = enrolledStudents;
+            ArrangementViewModel arrangementVM = new ArrangementViewModel
+            {
+                Id = id,
+                Date = exam.Date,
+                StartTime = exam.StartTime,
+                EndTime = exam.EndTime,
+                LectureName = exam.Lecture.Name,
+                LectureId = exam.Lecture.Id,
+                Students = enrolledStudents,
+                SelectedAlgorithm = "Rastgele"
+            };
             ViewBag.Classrooms = new SelectList(_classroomSelectList, "Value", "Text");
-
+            ViewBag.AlgorithmOptions = new SelectList(new List<string>
+            {
+                "Rastgele",
+                "Başarı Sıralamasına Göre",
+                "Giriş Yılına Göre",
+                "Giriş Yılı ve Başarı Sıralamasına Göre"
+            });
             return View(arrangementVM);
         }
 
@@ -128,7 +139,13 @@ namespace exam_hall_seating.Controllers
         public async Task<IActionResult> ArrangementWithExcel(ArrangementViewModel arrangementVM, IFormFile file)
         {
             ViewBag.Classrooms = new SelectList(_classroomSelectList, "Value", "Text");
-
+            ViewBag.AlgorithmOptions = new SelectList(new List<string>
+            {
+                "Rastgele",
+                "Başarı Sıralamasına Göre",
+                "Giriş Yılına Göre",
+                "Giriş Yılı ve Başarı Sıralamasına Göre"
+            });
             var exam = await _examRepository.GetByIdAsync(arrangementVM.Id);
             arrangementVM.Date = exam.Date;
             arrangementVM.StartTime = exam.StartTime;
@@ -137,7 +154,7 @@ namespace exam_hall_seating.Controllers
             arrangementVM.LectureId = exam.Lecture.Id;
 
             List<EnrolledStudentViewModel> enrolledStudents = await _excelService.ReadExcelFileAsync(file);
-
+            
             //Random random = new Random();
             //enrolledStudents = enrolledStudents.OrderBy(student => random.Next()).ToList();
 
@@ -157,7 +174,13 @@ namespace exam_hall_seating.Controllers
         public async Task<IActionResult> ClassArrangement(ArrangementViewModel arrangementVM)
         {
             ViewBag.Classrooms = new SelectList(_classroomSelectList, "Value", "Text");
-
+            ViewBag.AlgorithmOptions = new SelectList(new List<string>
+            {
+                "Rastgele",
+                "Başarı Sıralamasına Göre",
+                "Giriş Yılına Göre",
+                "Giriş Yılı ve Başarı Sıralamasına Göre"
+            });
             var exam = await _examRepository.GetByIdAsync(arrangementVM.Id);
             var lecture = await _lectureRepository.GetByIdAsync(exam.LectureId);
             arrangementVM.Date = exam.Date;
@@ -178,6 +201,9 @@ namespace exam_hall_seating.Controllers
                 }
 
                 classroomList = classroomList.OrderByDescending(c => c.ExamCapacity).ToList();
+                arrangementVM.Students = _algorithmService.SortRandom(arrangementVM.Students);
+
+                List<EnrolledStudentViewModel> students = new List<EnrolledStudentViewModel>();
 
                 int currentStudent = 0;
                 foreach (var classroom in classroomList)
@@ -188,9 +214,13 @@ namespace exam_hall_seating.Controllers
                         arrangementVM.Students[currentStudent].ClassName = classroom.ClassName;
                         currentStudent++;
                     }
+                    List<EnrolledStudentViewModel> studentsWithCurrentClass = arrangementVM.Students.Where(x => x.ClassName == classroom.ClassName).ToList();
+                    studentsWithCurrentClass = _algorithmService.SortByAlgorithm(studentsWithCurrentClass, arrangementVM.SelectedAlgorithm);
+                    students.AddRange(studentsWithCurrentClass);
                 }
-            }            
-
+                students.AddRange(arrangementVM.Students.Where(x => x.ClassName == null));
+                arrangementVM.Students = students;
+            } 
             return View("Arrangement", arrangementVM);
         }
 
@@ -230,5 +260,6 @@ namespace exam_hall_seating.Controllers
                 Text = $"{classroom.ClassName} / Kapasite: {classroom.ExamCapacity}"
             }).ToList();           
         }
+
     }
 }
