@@ -25,6 +25,7 @@ builder.Services.AddScoped<IClassroomDetailRepository, ClassroomDetailsRepositor
 builder.Services.AddScoped<IExcelService, ExcelService>();
 builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IAlgorithmService, AlgorithmService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

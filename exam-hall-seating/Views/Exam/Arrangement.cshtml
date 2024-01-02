@@ -36,7 +36,6 @@
 </div>
 <hr />
 
-<h2>Sınıf Seçimi</h2>
 
 <form method="post" asp-controller="Exam" asp-action="ClassArrangement">
     <input type="hidden" asp-for="Id" value="@Model.Id" />
@@ -50,9 +49,14 @@
     }
     <div class="row">
         <div class="col-md-3">
+            <h2>Sınıf Seçimi</h2>
             <select multiple id="select-classroom" asp-for="SelectedClassrooms" asp-items="ViewBag.Classrooms"></select>
         </div>
         <div class="col-md-3">
+            <h2>Algoritma Seçimi</h2>
+            <select asp-for="SelectedAlgorithm" asp-items="ViewBag.AlgorithmOptions" class="form-control"></select>
+        </div>
+        <div class="col-md-3 mt-5">
             <button type="submit" class="btn btn-primary">Sınıflara yerleştir</button>
         </div>
     </div>
